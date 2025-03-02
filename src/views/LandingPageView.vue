@@ -4,6 +4,9 @@ import HeaderView from '@/components/HeaderView.vue';
 import InfoStatsView from '@/components/InfoStatsView.vue';
 import FeaturesView from '@/components/FeaturesView.vue';
 import ChooseYourPlanView from '@/components/ChooseYourPlanView.vue';
+import TestimoniesView from '@/components/TestimoniesView.vue';
+import SubscribeCard from '@/components/SubscribeCard.vue';
+import FooterView from '@/components/FooterView.vue';
 
 </script>
 
@@ -13,6 +16,9 @@ import ChooseYourPlanView from '@/components/ChooseYourPlanView.vue';
         <InfoStatsView />
         <FeaturesView />
         <ChooseYourPlanView />
+        <TestimoniesView />
+        <SubscribeCard />
+        <FooterView />
     </div>
 </template>
 
