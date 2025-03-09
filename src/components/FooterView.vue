@@ -55,7 +55,7 @@ const state = reactive({
                 <div class="flex xl:flex-1 flex-col sm:mb-10 xl:mb-0 sm:w-full sm:items-start" v-for="foot in state.footers" :key="foot">
                     <p class="text-sm font-semibold sm:mb-3 xl:mb-5">{{ foot.title }}</p>
                     <div v-for="detail in foot.details" :key="detail">
-                        <RouterLink :to="detail.toLowerCase()" class="text-sm text-gray-500 mb-2 hover:text-red-500">{{ detail }}</RouterLink>
+                        <RouterLink :to="'/' + detail.toLowerCase()" class="text-sm text-gray-500 mb-2 hover:text-red-500">{{ detail }}</RouterLink>
                     </div>
                 </div>
             </div>

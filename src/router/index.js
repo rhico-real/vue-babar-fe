@@ -3,6 +3,8 @@ import LandingPageView from '@/views/LandingPageView.vue';
 import JobsView from '@/views/JobsView.vue';
 import AddJobView from '@/views/AddJobView.vue';
 import CreateAppointmentView from '@/views/appointments/CreateAppointmentView.vue';
+import FindAppointmentView from '@/views/appointments/FindAppointmentView.vue';
+import AppointmentView from '@/views/appointments/AppointmentView.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +28,16 @@ const router = createRouter({
             path: '/appointment/create',
             name: 'createappointment',
             component: CreateAppointmentView
+        },
+        {
+            path: '/appointment/find',
+            name: 'findappointment',
+            component: FindAppointmentView
+        },
+        {
+            path: '/appointment/:id',
+            name: 'appointment',
+            component: AppointmentView
         }
     ]
 });
