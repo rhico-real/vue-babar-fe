@@ -3,9 +3,11 @@ import Navigation from '@/components/dashboard/Navigation.vue';
 import DropdownMenu from '@/components/DropdownMenu.vue';
 import type { DropdownModel } from '../../types/dropdown';
 import samplepatient from '@/assets/img/profile.png';
-import Button from '@/components/Button.vue';
+import AddPatientDialog from '@/components/dashboard/dialogs/AddPatientDialog.vue';
+
 import { ref } from 'vue';
-import Dialog from 'primevue/dialog';
+
+
 
 const monthOptions: DropdownModel[] = [
     {text: 'January', onClick: () => {}},
@@ -57,8 +59,6 @@ const patients = [
       }
     ]
 
-const addPatientDialog = ref(false);
-
 </script>
 
 <template>
@@ -69,7 +69,7 @@ const addPatientDialog = ref(false);
             
             <!-- add patient -->
             <div class="flex justify-end">
-                <Button @click="addPatientDialog = !addPatientDialog" text="Add Patient" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300"></Button>
+                <AddPatientDialog/>
             </div>
                     
 
@@ -142,15 +142,6 @@ const addPatientDialog = ref(false);
            
         </div>
     </Navigation>
-
-    <div class="bg-red-200">
-        <Dialog class="bg-red-200" v-model:visible="addPatientDialog" maximizable modal header="Header" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
-            <p class="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-        </Dialog>
-    </div>
     
 </template>
 

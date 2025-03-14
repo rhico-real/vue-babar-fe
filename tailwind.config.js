@@ -1,48 +1,60 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+    darkMode: ['class'],
+    content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
-    screens: {
-      sm: "340px",
-      md: "540px",
-      lg: "768px",
-      xl: "1180px"
-    },
-    extend: {
-      colors:{
-        'background': '#fdfdfd',
-        'sidebar': '#3749A6',
-        'dashboard': {
-          'selected': '#4C61CC',
-          'background': '#F5F6FA',
-          'status': {
-            'done': '#00B69B',
-            'pending': '#FCBE2D',
-            'noshow': '#FD5454'
-          },
-          'buttons': {
-            'add': "#008000"
-          }
-        }
-      }
-    },
-    fontSize: {
-      xs: '0.7rem',
-      sm: '0.8rem',
-      base: '1rem',
-      xl: '1.25rem',
-      '2xl': '1.563rem',
-      '3xl': ['1.953rem', '37px'],
-      '4xl': '2.441rem',
-      '5xl': '3.052rem',
-    },
-    fontFamily: {
-      sans: ['Inter', 'sans-serif'],
-    },
+  	screens: {
+  		sm: '340px',
+  		md: '540px',
+  		lg: '768px',
+  		xl: '1180px'
+  	},
+  	extend: {
+  		colors: {
+  			background: '#fdfdfd',
+  			sidebar: '#3749A6',
+  			dashboard: {
+  				selected: '#4C61CC',
+  				background: '#F5F6FA',
+  				status: {
+  					done: '#00B69B',
+  					pending: '#FCBE2D',
+  					noshow: '#FD5454'
+  				},
+  				buttons: {
+  					add: '#008000'
+  				}
+  			}
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	},
+  	fontSize: {
+  		xs: '0.7rem',
+  		sm: '0.8rem',
+  		base: '1rem',
+  		xl: '1.25rem',
+  		'2xl': '1.563rem',
+  		'3xl': [
+  			'1.953rem',
+  			'37px'
+  		],
+  		'4xl': '2.441rem',
+  		'5xl': '3.052rem'
+  	},
+  	fontFamily: {
+  		sans: [
+  			'Inter',
+  			'sans-serif'
+  		]
+  	}
   },
   variants: {
     extend: {}
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 
