@@ -10,7 +10,20 @@ export default {
     },
     extend: {
       colors:{
-        'background': '#fdfdfd'
+        'background': '#fdfdfd',
+        'sidebar': '#3749A6',
+        'dashboard': {
+          'selected': '#4C61CC',
+          'background': '#F5F6FA',
+          'status': {
+            'done': '#00B69B',
+            'pending': '#FCBE2D',
+            'noshow': '#FD5454'
+          },
+          'buttons': {
+            'add': "#008000"
+          }
+        }
       }
     },
     fontSize: {

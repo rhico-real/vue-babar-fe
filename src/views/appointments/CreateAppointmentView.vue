@@ -4,6 +4,7 @@ import { useRouter, RouterLink } from 'vue-router';
 import { reactive } from 'vue';
 import axios from 'axios';
 import { useToast } from 'vue-toastification';
+import Navbar from '@/components/Navbar.vue';
 
 const toast = useToast();
 const router = useRouter();
@@ -37,6 +38,7 @@ const submit = async () => {
 </script>
 
 <template>
+    <Navbar/>
     <section>
         <div class="flex flex-col justify-center items-center h-screen">
            <!-- title -->

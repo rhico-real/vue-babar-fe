@@ -7,10 +7,12 @@ import ChooseYourPlanView from '@/components/ChooseYourPlanView.vue';
 import TestimoniesView from '@/components/TestimoniesView.vue';
 import SubscribeCard from '@/components/SubscribeCard.vue';
 import FooterView from '@/components/FooterView.vue';
+import Navbar from '@/components/Navbar.vue';
 
 </script>
 
 <template>
+    <Navbar/>
     <div class="xl:mx-36 mx-6">
         <HeaderView />
         <InfoStatsView />

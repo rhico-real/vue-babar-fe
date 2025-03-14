@@ -19,9 +19,8 @@
             </div>
             <div class="flex flex-1 my-3 md:mx-4 xl:mx-36  space-x-1 text-white justify-end text-sm">
                 <RouterLink to="/" :class="[isActiveLink('/') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Home</RouterLink>
-                <RouterLink to="/jobs" :class="[isActiveLink('/jobs') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Jobs</RouterLink>
-                <RouterLink to="/jobs/add" :class="[isActiveLink('/jobs/add') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Add Job</RouterLink>
                 <RouterLink to="/appointment/create" :class="[isActiveLink('/appointment/create') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Create Appointment</RouterLink>
+                <RouterLink to="/dashboard" :class="[isActiveLink('/dashboard') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Dashboard</RouterLink>
             </div>
         </div>
     </nav>
