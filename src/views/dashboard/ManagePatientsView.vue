@@ -5,6 +5,7 @@ import type { DropdownModel } from '../../types/dropdown';
 import samplepatient from '@/assets/img/profile.png';
 import PatientDialog from '@/components/dashboard/dialogs/PatientDialog.vue';
 import CustomButton from '@/components/Button.vue';
+import DeletePatientDialog from '@/components/dashboard/dialogs/DeletePatientDialog.vue';
 
 const monthOptions: DropdownModel[] = [
     {text: 'January', onClick: () => {}},
@@ -26,7 +27,7 @@ const patients = [
         "id": 1,
         "name": "John Doe",
         "reason": "PCOS",
-        "date": "March 14,2025 2:42PM",
+        "date": "2025-03-14T17:33",
         "queue": 1,
         "status": "done"
       },
@@ -34,7 +35,7 @@ const patients = [
         "id": 2,
         "name": "John Doe",
         "reason": "PCOS",
-        "date": "March 14,2025 2:42PM",
+        "date": "2025-03-14T17:33",
         "queue": 1,
         "status": "done"
       },
@@ -42,7 +43,7 @@ const patients = [
         "id": 3,
         "name": "John Doe",
         "reason": "PCOS",
-        "date": "March 14,2025 2:42PM",
+        "date": "2025-03-14T17:33",
         "queue": 1,
         "status": "done"
       },
@@ -50,7 +51,7 @@ const patients = [
         "id": 4,
         "name": "John Doe",
         "reason": "PCOS",
-        "date": "March 14,2025 2:42PM",
+        "date": "2025-03-14T17:33",
         "queue": 1,
         "status": "done"
       }
@@ -133,13 +134,22 @@ const patients = [
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <PatientDialog 
-                                        title="Edit Patient",
+                                        <PatientDialog 
+                                            title="Edit Patient",
+                                            :name="patient.name"
+                                            :reason="patient.reason"
+                                            :dateAndTime="patient.date"
                                         >
-                                        <template #triggerbutton>
-                                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                                        </template>
-                                    </PatientDialog>
+                                            <template #triggerbutton>
+                                                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                            </template>
+                                        </PatientDialog>
+                                    
+                                    <DeletePatientDialog
+                                        :name="patient.name"
+                                        :reason="patient.reason"
+                                        :dateAndTime="patient.date"
+                                    ></DeletePatientDialog>
                                 </td>
                             </tr>
                         </tbody>
