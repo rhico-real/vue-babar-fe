@@ -4,6 +4,7 @@ import notificationIcon from '@/assets/img/notification.png';
 import logo from '@/assets/img/logo-1.png';
 import profile from '@/assets/img/profile.png';
 import { useRoute, RouterLink } from 'vue-router';
+import LogoutDialog from '@/components/dashboard/dialogs/LogoutDialog.vue';
 
 const route = useRoute();
 
@@ -54,12 +55,13 @@ const searchbar = ref('');
                             </div>
                         </div>
                     </RouterLink>
-                    <div class="flex">
-                        <div :class="['flex', 'items-center', 'justify-center',  '', 'py-4', 'px-8', 'rounded-lg']">
+                    <LogoutDialog></LogoutDialog>
+                    <!-- <div class="flex">
+                        <div @click="logout" :class="['flex', 'items-center', 'justify-center',  '', 'py-4', 'px-8', 'rounded-lg', 'cursor-pointer']">
                             <i class="pi pi-clock text-white pr-4"></i>
                             <p class="text-white text-sm">Logout</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>   
             </div>
             <div class="flex flex-1 flex-col">

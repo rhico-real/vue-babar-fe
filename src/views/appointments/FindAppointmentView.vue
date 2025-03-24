@@ -17,7 +17,16 @@ const query = async () => {
             const payload = {
                 'reference_code': referenceCode.value
             }
-            const response = await axios.post('http://127.0.0.1:5000/api/find_appointment/', payload);
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/find_appointment/', 
+                payload, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQyNzQzNjY1LCJpYXQiOjE3NDI2NTcyNjUsImp0aSI6IjhhYjkxOWU5ZTk4ZDQyMDdhODFiMjU2YjY1OGQxOTQ2IiwidXNlcl9pZCI6MX0.fODyrRIFI_r48Nau6MzW1efoJBfMq_5PrtI-3tNXzd4'
+                    }
+                });
+
             router.push(`/appointment/${referenceCode.value}`)
             console.log(response.data);
         } catch(e){

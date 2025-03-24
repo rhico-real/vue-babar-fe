@@ -14,6 +14,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.480.0",
+    "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
     "reka-ui": "^2.1.0",
     "tailwind-merge": "^3.0.2",

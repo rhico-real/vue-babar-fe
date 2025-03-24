@@ -20,7 +20,8 @@
             <div class="flex flex-1 my-3 md:mx-4 xl:mx-36  space-x-1 text-white justify-end text-sm">
                 <RouterLink to="/" :class="[isActiveLink('/') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Home</RouterLink>
                 <RouterLink to="/appointment/create" :class="[isActiveLink('/appointment/create') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Create Appointment</RouterLink>
-                <RouterLink to="/dashboard" :class="[isActiveLink('/dashboard') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Dashboard</RouterLink>
+                <!-- <RouterLink to="/dashboard" :class="[isActiveLink('/dashboard') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Dashboard</RouterLink> -->
+                <RouterLink to="/auth/login" :class="[isActiveLink('/auth/login') ? 'bg-green-800' : '', 'hover:bg-gray-800', 'py-2', 'px-2', 'rounded-md']">Login</RouterLink>
             </div>
         </div>
     </nav>
