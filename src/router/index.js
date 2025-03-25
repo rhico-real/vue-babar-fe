@@ -8,6 +8,73 @@ import ManagePatientsView from '@/views/dashboard/ManagePatientsView.vue';
 import SettingsView from '@/views/dashboard/SettingsView.vue';
 import LoginView from '@/views/auth/LoginView.vue';
 import RegisterView from '@/views/auth/RegisterView.vue';
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
+
+const authRoutes = [
+    {
+        path: '/auth',
+        children: [
+            {
+                path: 'login',
+                component: LoginView,
+                name: 'login'
+            },
+            {
+                path: 'register',
+                component: RegisterView,
+                name: 'register'
+            }
+        ]
+    }
+];
+
+const appointmentRoutes = [
+    {
+        path: '/appointment',
+        children: [
+            {
+                path: 'create',
+                name: 'createappointment',
+                component: CreateAppointmentView,
+            },
+            {
+                path: 'find',
+                name: 'findappointment',
+                component: FindAppointmentView
+            },
+            {
+                path: ':id',
+                name: 'appointment',
+                component: AppointmentView
+            },
+        ]
+    }
+];
+
+const dashboardRoutes = [
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: DashboardView,
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: 'manage-patients',
+                name: 'managepatients',
+                component: ManagePatientsView,
+                meta: { requiresAuth: false }
+            },
+            {
+                path: 'settings',
+                name: 'settings',
+                component: SettingsView,
+                meta: { requiresAuth: true },
+            }
+        ]
+    }
+];
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,47 +84,22 @@ const router = createRouter({
             name: 'landing',
             component: LandingPageView
         },
-        {
-            path: '/auth/login',
-            name: 'login',
-            component: LoginView
-        },
-        {
-            path: '/auth/register',
-            name: 'register',
-            component: RegisterView
-        },
-        {
-            path: '/appointment/create',
-            name: 'createappointment',
-            component: CreateAppointmentView
-        },
-        {
-            path: '/appointment/find',
-            name: 'findappointment',
-            component: FindAppointmentView
-        },
-        {
-            path: '/appointment/:id',
-            name: 'appointment',
-            component: AppointmentView
-        },
-        {
-            path: '/dashboard',
-            name: 'dashboard',
-            component: DashboardView
-        },
-        {
-            path: '/dashboard/manage-patients',
-            name: 'managepatients',
-            component: ManagePatientsView
-        },
-        {
-            path: '/dashboard/settings',
-            name: 'settings',
-            component: SettingsView
-        }
+        ...authRoutes,
+        ...appointmentRoutes,
+        ...dashboardRoutes
     ]
 });
+
+router.beforeEach((to, from) => {
+    var token = localStorage.getItem('access');
+
+    if(to.meta.requiresAuth && !token){
+        toast.error('Oops. Unauthenticated.');
+
+        return {
+            path: '/',
+        }
+    }
+})
 
 export default router;

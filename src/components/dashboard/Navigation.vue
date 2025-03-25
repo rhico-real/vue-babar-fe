@@ -24,6 +24,7 @@ const sidebarNavs = [
 ];
 
 const searchbar = ref('');
+
 </script>
 
 <template>
