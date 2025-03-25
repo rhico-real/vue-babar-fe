@@ -1,4 +1,5 @@
 export interface DropdownModel {
-    text: string;
-    onClick: () => void;
+    text: string; // required
+    onClick: () => void; // required
+    class?: string // make it optional
 } 

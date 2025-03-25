@@ -56,15 +56,19 @@ const appointmentRoutes = [
 const dashboardRoutes = [
     {
         path: '/dashboard',
-        name: 'dashboard',
-        component: DashboardView,
-        meta: { requiresAuth: true },
+        // meta: { requiresAuth: true },
         children: [
+            {
+                path: '',
+                name: 'dashboard',
+                component: DashboardView,
+                // meta: { requiresAuth: true }
+            },
             {
                 path: 'manage-patients',
                 name: 'managepatients',
                 component: ManagePatientsView,
-                meta: { requiresAuth: false }
+                // meta: { requiresAuth: true }
             },
             {
                 path: 'settings',

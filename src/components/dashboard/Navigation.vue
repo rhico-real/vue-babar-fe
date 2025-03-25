@@ -28,11 +28,12 @@ const searchbar = ref('');
 </script>
 
 <template>
-    <section>
-        <div class="flex">
+    <section class="h-screen">
+        <div class="flex h-full">
             <div class="shrink-0 flex flex-col w-56 bg-sidebar h-screen">
                 <img class="py-8 px-10" :src="logo" alt="BAS logo">
                 
+                <!-- Sidebar Navigation (aka Left Side) -->
                 <div class="flex flex-col flex-1">
                     <div class="flex" v-for="nav in sidebarNavs" :key="nav">
                         <RouterLink class="w-full" :to="nav.to">
@@ -57,24 +58,14 @@ const searchbar = ref('');
                         </div>
                     </RouterLink>
                     <LogoutDialog></LogoutDialog>
-                    <!-- <div class="flex">
-                        <div @click="logout" :class="['flex', 'items-center', 'justify-center',  '', 'py-4', 'px-8', 'rounded-lg', 'cursor-pointer']">
-                            <i class="pi pi-clock text-white pr-4"></i>
-                            <p class="text-white text-sm">Logout</p>
-                        </div>
-                    </div> -->
                 </div>   
             </div>
+
+            <!-- Topbar navigation (aka Right Side) -->
             <div class="flex flex-1 flex-col">
                 <div class="flex w-full py-6 px-10">
-                    <!-- searchbar -->
-                    <div class="flex flex-1 justify-start items-center relative">
-                        <input v-model="searchbar" class="w-96 border-2 border-gray-400 px-10 py-1 rounded-full" type="text">
-                        <i class="cursor-pointer absolute ml-3 pi pi-search" :class="searchbar ? 'text-black' : 'text-gray-300'"></i>
-                        <p v-if="!searchbar" class="absolute ml-10 text-gray-300">Search...</p>
-                    </div>
                     <!-- notification and profile -->
-                    <div class="flex items-center justify-center">  
+                    <div class="flex flex-1 items-center justify-end">  
                         <img class="h-6 w-6 mr-6" :src="notificationIcon" alt="">
                         <img class="h-10 w-10 rounded-full" :src="profile" alt="">
                         <div class="flex flex-col ml-4">
@@ -83,8 +74,11 @@ const searchbar = ref('');
                         </div>
                     </div>
                 </div>
+
                 <!-- Children -->
-                <slot></slot>
+                <div class="flex-1 overflow-auto bg-dashboard-background">
+                    <slot></slot>
+                </div>
             </div>
         </div>
     </section>

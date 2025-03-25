@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
-import DropdownMenu from '@/components/DropdownMenu.vue';
+import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
 import type { DropdownModel } from '../../types/dropdown';
 import samplepatient from '@/assets/img/profile.png';
 import PatientDialog from '@/components/dashboard/dialogs/PatientDialog.vue';
