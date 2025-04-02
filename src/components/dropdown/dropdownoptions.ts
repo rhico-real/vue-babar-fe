@@ -6,6 +6,7 @@ export enum DropdownOption {
 }
 
 export const monthOptions: DropdownModel[] = [
+    {text: 'All', onClick: () => {}},
     {text: 'January', onClick: () => {}},
     {text: 'February', onClick: () => {}},
     {text: 'March', onClick: () => {}},
@@ -21,7 +22,7 @@ export const monthOptions: DropdownModel[] = [
 ];
 
 export const statusOptions: DropdownModel[] = [
-    {text: 'Done', onClick: () => {}, class: "bg-dashboard-status-done text-center text-white rounded-lg py-1"},
-    {text: 'Pending', onClick: () => {}, class: "bg-dashboard-status-pending text-center text-white rounded-lg py-1"},
-    {text: 'No Show', onClick: () => {}, class: "bg-dashboard-status-noshow text-center text-white rounded-lg py-1"}
+    {text: 'Done', onClick: () => {}, class: "bg-dashboard-status-done text-center text-white rounded-lg py-1", color:"bg-dashboard-status-done"},
+    {text: 'Pending', onClick: () => {}, class: "bg-dashboard-status-pending text-center text-white rounded-lg py-1", color:"bg-dashboard-status-pending"},
+    {text: 'No Show', onClick: () => {}, class: "bg-dashboard-status-noshow text-center text-white rounded-lg py-1", color:"bg-dashboard-status-noshow"}
 ];

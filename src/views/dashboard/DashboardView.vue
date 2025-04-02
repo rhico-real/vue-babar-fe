@@ -3,6 +3,21 @@ import Navigation from '@/components/dashboard/Navigation.vue';
 import totalpatientsicon from '@/assets/img/totalpatients.png';
 import totalappointmentsicon from '@/assets/img/totalappointments.png';
 import TableView from '@/components/dashboard/TableView.vue';
+import { onMounted } from 'vue';
+import axios from 'axios';
+import { BASEURL, httpGet } from '@/utils/http_config.js';
+
+const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
+
+onMounted( async () => {
+    await getAppointments();
+});
+
+const getAppointments = async () => {
+    const res = await httpGet(httpGetAppointments);
+    console.log(res);
+}
+
 </script>
 
 <template>

@@ -29,6 +29,9 @@ const handleClick = (option: DropdownModel) => {
     option.onClick?.();
 };
 
+onMounted(() => {
+    console.log(statusOptions.find(option => option.text.toLowerCase() === 'done').color);
+});
 </script>
 
 <template>
@@ -43,12 +46,13 @@ const handleClick = (option: DropdownModel) => {
             </span>
         </div>
 
-        <div v-if="option === DropdownOption.STATUS" class="w-full bg-red-200">
+        <div v-if="option === DropdownOption.STATUS" class="w-full">
             <span @click="isOpenDropdown = !isOpenDropdown" class="rounded-md shadow-sm">
-                <button class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800" 
+                <button :class="(statusOptions.find(option => option.text.toLowerCase() === currentTitle.toLowerCase())?.color) + 
+                ' inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800'"
                     type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-117">
-                    <span >{{currentTitle}}</span>
-                    <svg class="w-5 h-5 ml-2 -mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span class="text-white">{{currentTitle}}</span>
+                    <svg class="w-5 h-5 ml-2 -mr-1 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </button>
             </span>
         </div>

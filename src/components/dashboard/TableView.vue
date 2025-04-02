@@ -29,6 +29,7 @@ const dummyData = {
     name: "John Doe",
     reason: "PCOS",
     date: "March 14,2025 2:42PM",
+    referenceNumber: "123qwe",
     queue: 1,
     status: "Done"
 };
@@ -67,6 +68,9 @@ const dummyData = {
                             Date and Time
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Reference Number
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Queue
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -89,10 +93,13 @@ const dummyData = {
                             {{dummyData.date}}
                         </td>
                         <td class="px-6 py-4 text-black">
+                            {{dummyData.referenceNumber}}
+                        </td>
+                        <td class="px-6 py-4 text-black">
                             {{dummyData.queue}}
                         </td>
                         <td class="px-6 py-4">
-                            <DropdownMenu class="bg-red-200 w-full" :title="dummyData.status" :option="DropdownOption.STATUS"/>    
+                            <DropdownMenu class="w-full" :title="dummyData.status" :option="DropdownOption.STATUS"/>    
                             <!-- <div class="bg-dashboard-status-done text-center text-white rounded-lg py-1">
                                 {{dummyData.status}}
                             </div> -->
