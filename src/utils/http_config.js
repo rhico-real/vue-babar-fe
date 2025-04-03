@@ -16,8 +16,6 @@ export const BASEURL = "http://127.0.0.1:8000";
 
 export const httpGet = async (endpoint) => {
     try{
-        console.log(headers);
-
         const response = await axios.get(endpoint, headers);
         return response.data;
     }catch(error){

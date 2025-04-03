@@ -10,6 +10,10 @@ const props = defineProps({
         type: String,
         default: "No Name"
     },
+    items: {
+        type: Array,
+        default: []
+    }
 })
 
 const searchbar = ref('');
@@ -25,19 +29,20 @@ watch(searchbar, (text) => {
     }, 800);
 });
 
-const dummyData = {
-    name: "John Doe",
-    reason: "PCOS",
-    date: "March 14,2025 2:42PM",
-    referenceNumber: "123qwe",
-    queue: 1,
-    status: "Done"
+// Extract headers dynamically from the first object
+const tableHeaders = computed(() =>
+    props.items.length > 0 ? Object.keys(props.items[0]) : []
+);
+
+// Function to format headers (e.g., convert "patient_name" to "Patient Name")
+const formatHeader = (key) => {
+    return key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 </script>
 
 <template>
-     <div class="flex flex-col mt-10 bg-white p-6 rounded-lg">
+     <div class="flex flex-col mt-10 bg-white p-6 rounded-lg h-3/5">
         <div class="flex">
             <div class="flex flex-1">
                 <h1 class="text-3xl font-bold mb-5 mr-5">{{title}}</h1>
@@ -54,39 +59,28 @@ const dummyData = {
         </div>
 
         <!-- table -->
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg h-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-200 text-xs text-gray-700 uppercase">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Patient name
+                        <th scope="col" class="px-6 py-3" v-for="(key,i) in tableHeaders" :key="i">
+                            {{ formatHeader(key) }}
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Reason
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Date and Time
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Reference Number
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Queue
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Status
-                        </th>
-                        <!-- <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Edit</span>
-                        </th> -->
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white hover:bg-gray-50" v-for="n in 5">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{dummyData.name}}
-                        </th>
-                        <td class="px-6 py-4 text-black">
+                    <tr class="bg-white hover:bg-gray-50" v-for="(appointment, index) in props.items" :key="index">
+                        <td class="px-6 py-4 text-black" v-for="(key, index) in tableHeaders" :key="index">
+                            <span v-if="key.toLowerCase() === 'status'">
+                                <DropdownMenu class="w-full" :title="appointment[key]" :option="DropdownOption.STATUS"/>    
+                            </span>
+                            <span v-else>{{ appointment[key] ?? "N/A" }}</span>
+                            
+                        </td>
+                        <!-- <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            {{ props.items[key] }}
+                        </th> -->
+                        <!-- <td class="px-6 py-4 text-black">
                             {{dummyData.reason}}
                         </td>
                         <td class="px-6 py-4 text-black">
@@ -100,12 +94,6 @@ const dummyData = {
                         </td>
                         <td class="px-6 py-4">
                             <DropdownMenu class="w-full" :title="dummyData.status" :option="DropdownOption.STATUS"/>    
-                            <!-- <div class="bg-dashboard-status-done text-center text-white rounded-lg py-1">
-                                {{dummyData.status}}
-                            </div> -->
-                        </td>
-                        <!-- <td class="px-6 py-4 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         </td> -->
                     </tr>
                 </tbody>

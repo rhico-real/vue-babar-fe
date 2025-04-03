@@ -22,7 +22,7 @@ export const monthOptions: DropdownModel[] = [
 ];
 
 export const statusOptions: DropdownModel[] = [
-    {text: 'Done', onClick: () => {}, class: "bg-dashboard-status-done text-center text-white rounded-lg py-1", color:"bg-dashboard-status-done"},
-    {text: 'Pending', onClick: () => {}, class: "bg-dashboard-status-pending text-center text-white rounded-lg py-1", color:"bg-dashboard-status-pending"},
-    {text: 'No Show', onClick: () => {}, class: "bg-dashboard-status-noshow text-center text-white rounded-lg py-1", color:"bg-dashboard-status-noshow"}
+    {text: 'Done', enum: 'D', onClick: () => {}, class: "bg-dashboard-status-done text-center text-white rounded-lg py-1", color:"bg-dashboard-status-done"},
+    {text: 'Pending', enum: 'P',  onClick: () => {}, class: "bg-dashboard-status-pending text-center text-white rounded-lg py-1", color:"bg-dashboard-status-pending"},
+    {text: 'No Show', enum: 'NS', onClick: () => {}, class: "bg-dashboard-status-noshow text-center text-white rounded-lg py-1", color:"bg-dashboard-status-noshow"}
 ];

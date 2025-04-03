@@ -7,11 +7,11 @@ export interface AppointmentModel {
     time_estimate: string;
     reference_code: string;
     status: string;
-    user: any | null; // Adjust the type based on `user` data
+    reason?: string;
 }
 
 // Function to map API response to the model
-export const mapToQueueModel = (data: any[]): AppointmentModel[] => {
+export const mapToAppointmentModel = (data: any[]): AppointmentModel[] => {
     return data.map(item => ({
         id: item.id,
         full_name: item.full_name,
@@ -22,6 +22,18 @@ export const mapToQueueModel = (data: any[]): AppointmentModel[] => {
         time_estimate: item.time_estimate,
         reference_code: item.reference_code,
         status: item.status,
-        user: item.user
+        reason: item.reason
+    }));
+};
+
+export const mapToTableView = (data: any[]): Partial<AppointmentModel>[] => {
+    return data.map(item => ({
+        full_name: item.full_name,
+        email: item.email,
+        phone_number: item.phone_number,
+        date: item.date,
+        queue_number: item.queue_number,
+        status: item.status,
+        reason: item.reason
     }));
 };

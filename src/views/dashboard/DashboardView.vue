@@ -3,19 +3,31 @@ import Navigation from '@/components/dashboard/Navigation.vue';
 import totalpatientsicon from '@/assets/img/totalpatients.png';
 import totalappointmentsicon from '@/assets/img/totalappointments.png';
 import TableView from '@/components/dashboard/TableView.vue';
-import { onMounted } from 'vue';
-import axios from 'axios';
+import { onMounted, ref } from 'vue';
 import { BASEURL, httpGet } from '@/utils/http_config.js';
+import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
+import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
 
 const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
+const httpGetPatients = `${BASEURL}/api/patients/`;
+
+const appointmentsList = ref([]);
+const patientsList = ref([]);
 
 onMounted( async () => {
     await getAppointments();
+    await getPatients();
 });
 
+
 const getAppointments = async () => {
-    const res = await httpGet(httpGetAppointments);
-    console.log(res);
+    const data = await httpGet(httpGetAppointments);
+    appointmentsList.value = appointmentMapToTableView(data);
+}
+
+const getPatients = async () => {
+    const data = await httpGet(httpGetPatients);
+    patientsList.value = patientMapToTableView(data);
 }
 
 </script>
@@ -60,8 +72,8 @@ const getAppointments = async () => {
                 </div>
             </div>
            
-            <TableView class="mt-20" title="Appointments"></TableView>
-            <TableView title="Patients"></TableView>
+            <TableView class="mt-20" title="Appointments" :items="appointmentsList"></TableView>
+            <TableView title="Patients" :items="patientsList"></TableView>
         </div>
     </Navigation>
 </template>
