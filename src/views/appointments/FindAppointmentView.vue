@@ -18,7 +18,7 @@ const query = async () => {
                 'reference_code': referenceCode.value
             }
             const response = await axios.post(
-                'http://127.0.0.1:8000/api/find_appointment/', 
+                'http://127.0.0.1:8000/api/find_appointment_by_reference/', 
                 payload, 
                 {
                     headers: {

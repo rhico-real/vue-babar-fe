@@ -4,12 +4,15 @@ import totalpatientsicon from '@/assets/img/totalpatients.png';
 import totalappointmentsicon from '@/assets/img/totalappointments.png';
 import TableView from '@/components/dashboard/TableView.vue';
 import { onMounted, ref } from 'vue';
-import { BASEURL, httpGet } from '@/utils/http_config.js';
+import { BASEURL, httpGet, httpPost } from '@/utils/http_config.js';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
 
 const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
 const httpGetPatients = `${BASEURL}/api/patients/`;
+
+const httpPostFindAppointment = `${BASEURL}/api/filter_appointment/`;
+const httpPostFindPatient = `${BASEURL}/api/filter_patient/`;
 
 const appointmentsList = ref([]);
 const patientsList = ref([]);
@@ -28,6 +31,24 @@ const getAppointments = async () => {
 const getPatients = async () => {
     const data = await httpGet(httpGetPatients);
     patientsList.value = patientMapToTableView(data);
+}
+
+const searchAppointments = async (value) => {
+    const payload = {
+        "full_name": value
+    }
+
+    const data = await httpPost(httpPostFindAppointment, payload);
+    return data;
+}
+
+const searchPatients= async (value) => {
+    const payload = {
+        "full_name": value
+    }
+
+    const data = await httpPost(httpPostFindPatient, payload);
+    return data;
 }
 
 </script>
@@ -72,8 +93,8 @@ const getPatients = async () => {
                 </div>
             </div>
            
-            <TableView class="mt-20" title="Appointments" :items="appointmentsList"></TableView>
-            <TableView title="Patients" :items="patientsList"></TableView>
+            <TableView class="mt-20" title="Appointments" :items="appointmentsList" :searchbarFunction="searchAppointments" :parser="appointmentMapToTableView"></TableView>
+            <TableView title="Patients" :items="patientsList" :searchbarFunction="searchPatients" :parser="patientMapToTableView" :hasMonth="false"></TableView>
         </div>
     </Navigation>
 </template>

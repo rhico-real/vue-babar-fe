@@ -2,21 +2,21 @@ import axios from "axios";
 import { useToast } from 'vue-toastification';
 import  router from '@/router';
 
-const access = localStorage.getItem('access');
+const getAccessToken = () => localStorage.getItem('access');
 const toast = useToast();
 
 
-export const headers = {
+export const headers = () => ({
     headers: {
-        'Authorization': `Bearer ${access}`
+        'Authorization': `Bearer ${getAccessToken()}`
     }
-}
+});
 
 export const BASEURL = "http://127.0.0.1:8000";
 
 export const httpGet = async (endpoint) => {
     try{
-        const response = await axios.get(endpoint, headers);
+        const response = await axios.get(endpoint, headers());
         return response.data;
     }catch(error){
         if(error.status == 401){
@@ -27,6 +27,21 @@ export const httpGet = async (endpoint) => {
         }
     }
 }
+
+export const httpPost = async (endpoint, payload) => {
+    try{
+        const response = await axios.post(endpoint, payload ,headers());
+        return response.data;
+    }catch(error){
+        if(error.status == 401){
+            logout();
+        } else {
+            console.error(error);
+            return error.data;
+        }
+    }
+}
+
 
 export const logout = async () => {
     const httpLogout = `${BASEURL}/api/auth/logout/`;

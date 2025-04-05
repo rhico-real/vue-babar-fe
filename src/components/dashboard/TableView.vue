@@ -13,26 +13,56 @@ const props = defineProps({
     items: {
         type: Array,
         default: []
+    },
+    searchbarFunction: Function,
+    parser: {
+        type: Function,
+        default: () => (data) => data
+    },
+    hasMonth: {
+        type: Boolean,
+        default: true
     }
 })
 
 const searchbar = ref('');
-const searchbarFunction = () => {
-    console.log(searchbar.value);
+const filteredItems = ref([]);
+
+watch(
+    () => props.items,
+    (newItems) => {
+        filteredItems.value = newItems;
+    },
+    {immediate: true}
+)
+
+const searchbarTableFunction = async (val) => {
+    if(props.searchbarFunction) {
+        const data = await props.searchbarFunction(val);
+        if(data){
+            filteredItems.value = props.parser(data);
+        } else {
+            filteredItems.value = props.items;
+        }
+    }
 }
 
 let searchbarDebounce;
 watch(searchbar, (text) => {
     clearTimeout(searchbarDebounce);
     searchbarDebounce = setTimeout(() => {
-        searchbarFunction();
-    }, 800);
+        if(text){
+            searchbarTableFunction(text);
+        } else {
+            filteredItems.value = props.items;
+        }
+    }, 200);
 });
 
 // Extract headers dynamically from the first object
 const tableHeaders = computed(() =>
-    props.items.length > 0 ? Object.keys(props.items[0]) : []
-);
+    filteredItems.value.length > 0 ? Object.keys(filteredItems.value[0]) : []
+);  
 
 // Function to format headers (e.g., convert "patient_name" to "Patient Name")
 const formatHeader = (key) => {
@@ -44,9 +74,9 @@ const formatHeader = (key) => {
 <template>
      <div class="flex flex-col mt-10 bg-white p-6 rounded-lg h-3/5">
         <div class="flex">
-            <div class="flex flex-1">
+            <div class="flex flex-1 ">
                 <h1 class="text-3xl font-bold mb-5 mr-5">{{title}}</h1>
-                <div class="relative max-w-sm items-center">
+                <div class="relative w-5/12 items-center">
                     <Input v-model="searchbar" id="search" type="text" placeholder="Search..." class="pl-8" />
                     <span class="h-9 absolute start-0 inset-y-0 flex items-center justify-center px-2">
                         <Search class="size-4 text-muted-foreground text-gray-500" />
@@ -55,7 +85,7 @@ const formatHeader = (key) => {
             </div>
             
             <!-- dropdown button -->
-            <DropdownMenu :options="DropdownOption.MONTH"/>           
+            <DropdownMenu v-if="props.hasMonth" :option="DropdownOption.MONTH"/>           
         </div>
 
         <!-- table -->
@@ -69,32 +99,13 @@ const formatHeader = (key) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white hover:bg-gray-50" v-for="(appointment, index) in props.items" :key="index">
+                    <tr class="bg-white hover:bg-gray-50" v-for="(item, itemIndex) in filteredItems" :key="itemIndex">
                         <td class="px-6 py-4 text-black" v-for="(key, index) in tableHeaders" :key="index">
                             <span v-if="key.toLowerCase() === 'status'">
-                                <DropdownMenu class="w-full" :title="appointment[key]" :option="DropdownOption.STATUS"/>    
+                                <DropdownMenu class="w-full" :title="item[key]" :option="DropdownOption.STATUS"/>    
                             </span>
-                            <span v-else>{{ appointment[key] ?? "N/A" }}</span>
-                            
+                            <span v-else>{{ item[key] ?? "N/A" }}</span>
                         </td>
-                        <!-- <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{ props.items[key] }}
-                        </th> -->
-                        <!-- <td class="px-6 py-4 text-black">
-                            {{dummyData.reason}}
-                        </td>
-                        <td class="px-6 py-4 text-black">
-                            {{dummyData.date}}
-                        </td>
-                        <td class="px-6 py-4 text-black">
-                            {{dummyData.referenceNumber}}
-                        </td>
-                        <td class="px-6 py-4 text-black">
-                            {{dummyData.queue}}
-                        </td>
-                        <td class="px-6 py-4">
-                            <DropdownMenu class="w-full" :title="dummyData.status" :option="DropdownOption.STATUS"/>    
-                        </td> -->
                     </tr>
                 </tbody>
             </table>

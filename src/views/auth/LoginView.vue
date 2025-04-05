@@ -36,13 +36,15 @@ const login = async () => {
 
     await axios.post('http://127.0.0.1:8000/api/auth/login/', payload)
         .then(function (response) {
+            console.log(response);
+
             localStorage.setItem('access', response.data['user']['tokens']['access']);
             localStorage.setItem('refresh', response.data['user']['tokens']['refresh']);
-
+            
             loadingButton.value = false;
             toast.success('Login Success.');
+            
             router.push('/dashboard');
-            console.log(response);
         })
         .catch(function (error) {
             loadingButton.value = false;

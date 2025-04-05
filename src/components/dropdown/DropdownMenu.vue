@@ -12,22 +12,23 @@ const props = defineProps({
     option: {
         type: String,
         default: DropdownOption.MONTH
-    }
+    },
+    optionClick: Function
 });
 
 const currentTitle = ref(props.title);
 const isOpenDropdown = ref(false);
 
-const handleClick = (option: DropdownModel) => {
+const handleClickOption = (option: DropdownModel) => {
     // close dropdown
     isOpenDropdown.value = false;
 
     // change the text of the dropdown
-    currentTitle.value = option.enum;
+    currentTitle.value = option.enum ?? option.text;
 
-    // perform whatever function
-    option.onClick?.();
+
 };
+
 </script>
 
 <template>
@@ -70,14 +71,14 @@ const handleClick = (option: DropdownModel) => {
                 <!-- Month Dropdown -->
                 <div v-if="props.option === DropdownOption.MONTH">
                     <div v-for="option in monthOptions" :key="option.text">
-                        <a href="javascript:void(0)" @click="handleClick(option)" class="hover:bg-gray-200 text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left" role="menuitem">{{option.text}}</a>
+                        <a href="javascript:void(0)" @click="handleClickOption(option)" class="hover:bg-gray-200 text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left" role="menuitem">{{option.text}}</a>
                     </div>
                 </div>
 
                 <!-- Status Dropdown -->
                 <div v-if="props.option === DropdownOption.STATUS">
                     <div v-for="option in statusOptions" :key="option.text">
-                        <a href="javascript:void(0)" @click="handleClick(option)" :class="option.class + 'hover:bg-gray-200 px-2 py-1 mx-2 my-4 flex text-center'" role="menuitem">{{option.text}}</a>
+                        <a href="javascript:void(0)" @click="handleClickOption(option)" :class="option.class + 'hover:bg-gray-200 px-2 py-1 mx-2 my-4 flex text-center'" role="menuitem">{{option.text}}</a>
                     </div>
                 </div>
 
@@ -85,9 +86,3 @@ const handleClick = (option: DropdownModel) => {
         </div>
     </div> 
 </template>
-
-<!-- <style scoped>
-    .dropdown:focus-within .dropdown-menu {
-        display:block;
-    }
-</style> -->
