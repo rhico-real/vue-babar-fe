@@ -51,6 +51,23 @@ const searchPatients= async (value) => {
     return data;
 }
 
+const filterByDateAppointments = async (value) => {
+    const payload = {
+        "date": value
+    }
+
+    const data = await httpPost(httpPostFindAppointment, payload);
+    return data;
+}
+
+const filterByStatusAppointments = async (value) => {
+    const payload = {
+        "status": value
+    }
+
+    const data = await httpPost(httpPostFindAppointment, payload);
+    return data;
+}
 </script>
 
 <template>
@@ -65,15 +82,15 @@ const searchPatients= async (value) => {
                     <div class="flex">
                         <div class="flex flex-col mr-12">
                             <p>Total Appointments</p>
-                            <h1 class="font-bold text-2xl">40,689</h1>
+                            <h1 class="font-bold text-2xl">{{ appointmentsList.length }}</h1>
                         </div>
                         <img :src="totalappointmentsicon" alt="" class="h-14">
                     </div>
-                    <div class="flex items-center mt-5">
+                    <!-- <div class="flex items-center mt-5">
                         <i class="pi pi-chart-line text-green-500 mr-2"></i>
                         <p class="font-semibold text-green-500 mr-4">8.5%</p>
                         <p class="text-sm">Up from yesterday</p>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- total patients card -->
@@ -81,20 +98,20 @@ const searchPatients= async (value) => {
                     <div class="flex">
                         <div class="flex flex-col mr-12">
                             <p>Total Patients</p>
-                            <h1 class="font-bold text-2xl">40,689</h1>
+                            <h1 class="font-bold text-2xl">{{ patientsList.length }}</h1>
                         </div>
                         <img :src="totalpatientsicon" alt="" class="h-14">
                     </div>
-                    <div class="flex items-center mt-5">
+                    <!-- <div class="flex items-center mt-5">
                         <i class="pi pi-chart-line text-green-500 mr-2"></i>
                         <p class="font-semibold text-green-500 mr-4">8.5%</p>
                         <p class="text-sm">Up from yesterday</p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
            
-            <TableView class="mt-20" title="Appointments" :items="appointmentsList" :searchbarFunction="searchAppointments" :parser="appointmentMapToTableView"></TableView>
-            <TableView title="Patients" :items="patientsList" :searchbarFunction="searchPatients" :parser="patientMapToTableView" :hasMonth="false"></TableView>
+            <TableView class="mt-20" title="Appointments" :items="appointmentsList" :searchbarFunction="searchAppointments" :parser="appointmentMapToTableView" :filterByDateFunction="filterByDateAppointments" :hasDateFilter="true" :hasStatusFilter="true" :filterByStatusFunction="filterByStatusAppointments"></TableView>
+            <TableView title="Patients" :items="patientsList" :searchbarFunction="searchPatients" :parser="patientMapToTableView"></TableView>
         </div>
     </Navigation>
 </template>

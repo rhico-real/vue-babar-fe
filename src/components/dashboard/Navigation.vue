@@ -18,6 +18,10 @@ const sidebarNavs = [
         to: '/dashboard'
     },
     {
+        title: 'Manage Appointments',
+        to: '/dashboard/manage-appointments'
+    },
+    {
         title: 'Manage Patients',
         to: '/dashboard/manage-patients'
     }

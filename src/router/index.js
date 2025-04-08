@@ -8,6 +8,8 @@ import ManagePatientsView from '@/views/dashboard/ManagePatientsView.vue';
 import SettingsView from '@/views/dashboard/SettingsView.vue';
 import LoginView from '@/views/auth/LoginView.vue';
 import RegisterView from '@/views/auth/RegisterView.vue';
+import ManageAppointmentsView from '@/views/dashboard/ManageAppointmentsView.vue';
+
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -62,6 +64,12 @@ const dashboardRoutes = [
                 path: '',
                 name: 'dashboard',
                 component: DashboardView,
+                // meta: { requiresAuth: true }
+            },
+            {
+                path: 'manage-appointments',
+                name: 'manageappointments',
+                component: ManageAppointmentsView,
                 // meta: { requiresAuth: true }
             },
             {

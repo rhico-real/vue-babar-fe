@@ -54,8 +54,6 @@ export const logout = async () => {
         localStorage.removeItem('refresh');
         
         router.push('/');
-        toast.success("Successfully logged out.");
-        console.log(value);
     }
 
     await axios.post(httpLogout, payload, headers)
@@ -66,8 +64,12 @@ export const logout = async () => {
             if(error.status == 401){
                 logoutFunction(error);
                 console.log(error.status);
+
+                toast.warning("Successfully logged out.");
+                console.log(value);
             } else {
-                toast.error("Error logging out. Please contact administrator.")
+                logoutFunction(error);
+                toast.warning("Logged out.");
                 console.log(error);
             }
         });
