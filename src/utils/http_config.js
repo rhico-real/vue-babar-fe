@@ -12,6 +12,7 @@ export const headers = () => ({
     }
 });
 
+
 export const BASEURL = "http://127.0.0.1:8000";
 
 export const httpGet = async (endpoint) => {
@@ -32,6 +33,40 @@ export const httpPost = async (endpoint, payload) => {
     try{
         const response = await axios.post(endpoint, payload ,headers());
         return response.data;
+    }catch(error){
+        if(error.status == 401){
+            logout();
+        } else {
+            console.error(error);
+            return error.data;
+        }
+    }
+}
+
+export const httpPatch = async (endpoint, payload) => {
+    try{
+        const response = await axios.patch(endpoint, payload, headers());
+        return response;
+    }catch(error){
+        if(error.status == 401){
+            logout();
+        } else {
+            console.error(error);
+            return error.data;
+        }
+    }
+}
+
+export const httpDelete = async (endpoint, payload) => {
+    console.log(headers());
+    try{
+        const response = await axios.delete(endpoint, {
+            data: payload,
+            headers: {
+                Authorization: `Bearer ${getAccessToken()}`
+            }
+        });
+        return response;
     }catch(error){
         if(error.status == 401){
             logout();

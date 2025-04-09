@@ -1,4 +1,5 @@
-export interface AppointmentModel {
+export class AppointmentModel {
+    id: number;
     full_name: string;
     email: string;
     phone_number: string;
@@ -28,6 +29,7 @@ export const mapToAppointmentModel = (data: any[]): AppointmentModel[] => {
 
 export const mapToTableView = (data: any[]): Partial<AppointmentModel>[] => {
     return data.map(item => ({
+        id: item.id,
         full_name: item.full_name,
         email: item.email,
         phone_number: item.phone_number,

@@ -179,16 +179,18 @@ const clearDateFilter = () => {
                         <th scope="col" class="px-6 py-3" v-for="(key,i) in tableHeaders" :key="i">
                             {{ formatHeader(key) }}
                         </th>
+                        <slot name="customHeader"></slot>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="bg-white hover:bg-gray-50" v-for="(item, itemIndex) in filteredItems" :key="itemIndex">
-                        <td class="px-6 py-4 text-black" v-for="(key, index) in tableHeaders" :key="index">
+                        <td class="px-6 py-4 text-black items-start" v-for="(key, index) in tableHeaders" :key="index">
                             <span v-if="key.toLowerCase() === 'status'">
                                 <DropdownMenu class="w-full" :title="item[key]" :option="DropdownOption.STATUS" :isDisabled="true"/>    
                             </span>
                             <span v-else>{{ item[key] ?? "N/A" }}</span>
                         </td>
+                        <slot name="customrow" :item="item" :index="itemIndex"></slot>
                     </tr>
                 </tbody>
             </table>

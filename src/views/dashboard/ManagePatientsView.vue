@@ -3,9 +3,9 @@ import Navigation from '@/components/dashboard/Navigation.vue';
 import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
 import type { DropdownModel } from '../../types/dropdown';
 import samplepatient from '@/assets/img/profile.png';
-import PatientDialog from '@/components/dashboard/dialogs/PatientDialog.vue';
+import PatientDialog from '@/components/dashboard/dialogs/patients/PatientDialog.vue';
 import CustomButton from '@/components/Button.vue';
-import DeletePatientDialog from '@/components/dashboard/dialogs/DeletePatientDialog.vue';
+// import DeletePatientDialog from '@/components/dashboard/dialogs/patients/DeletePatientDialog.vue';
 
 const monthOptions: DropdownModel[] = [
     {text: 'January'},
@@ -145,11 +145,11 @@ const patients = [
                                             </template>
                                         </PatientDialog>
                                     
-                                    <DeletePatientDialog
+                                    <!-- <DeletePatientDialog
                                         :name="patient.name"
                                         :reason="patient.reason"
                                         :dateAndTime="patient.date"
-                                    ></DeletePatientDialog>
+                                    ></DeletePatientDialog> -->
                                 </td>
                             </tr>
                         </tbody>
