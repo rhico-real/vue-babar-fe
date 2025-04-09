@@ -10,7 +10,7 @@ export interface PatientModel {
 }
 
 // Function to map API response to the model
-export const mapToAppointmentModel = (data: any[]): PatientModel[] => {
+export const mapToPatientModel = (data: any[]): PatientModel[] => {
     return data.map(item => ({
         id: item.id,
         full_name: item.full_name,

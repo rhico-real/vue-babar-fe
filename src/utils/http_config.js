@@ -32,13 +32,13 @@ export const httpGet = async (endpoint) => {
 export const httpPost = async (endpoint, payload) => {
     try{
         const response = await axios.post(endpoint, payload ,headers());
-        return response.data;
+        return response;
     }catch(error){
         if(error.status == 401){
             logout();
         } else {
             console.error(error);
-            return error.data;
+            return error;
         }
     }
 }

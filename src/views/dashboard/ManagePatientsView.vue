@@ -1,61 +1,57 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
-import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
-import type { DropdownModel } from '../../types/dropdown';
-import samplepatient from '@/assets/img/profile.png';
 import PatientDialog from '@/components/dashboard/dialogs/patients/PatientDialog.vue';
 import CustomButton from '@/components/Button.vue';
-// import DeletePatientDialog from '@/components/dashboard/dialogs/patients/DeletePatientDialog.vue';
+import { BASEURL, httpGet, httpPost, httpPatch, httpDelete } from '@/utils/http_config.js';
+import { useToast } from 'vue-toastification';
+import { ref, onMounted } from 'vue';
+import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
+import TableView from '@/components/dashboard/TableView.vue';
+import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
 
-const monthOptions: DropdownModel[] = [
-    {text: 'January'},
-    {text: 'February'},
-    {text: 'March'},
-    {text: 'April'},
-    {text: 'May'},
-    {text: 'June'},
-    {text: 'July'},
-    {text: 'August'},
-    {text: 'September'},
-    {text: 'October'},
-    {text: 'November'},
-    {text: 'December'},
-];
+const httpPatients = `${BASEURL}/api/patients/`;
+const httpPostFindAppointment = `${BASEURL}/api/filter_patient/`;
 
-const patients = [
-      {
-        "id": 1,
-        "name": "John Doe",
-        "reason": "PCOS",
-        "date": "2025-03-14T17:33",
-        "queue": 1,
-        "status": "done"
-      },
-      {
-        "id": 2,
-        "name": "John Doe",
-        "reason": "PCOS",
-        "date": "2025-03-14T17:33",
-        "queue": 1,
-        "status": "done"
-      },
-      {
-        "id": 3,
-        "name": "John Doe",
-        "reason": "PCOS",
-        "date": "2025-03-14T17:33",
-        "queue": 1,
-        "status": "done"
-      },
-      {
-        "id": 4,
-        "name": "John Doe",
-        "reason": "PCOS",
-        "date": "2025-03-14T17:33",
-        "queue": 1,
-        "status": "done"
-      }
-    ]
+const toast = useToast();
+
+const patientsList = ref([]);
+
+onMounted( async () => {
+    await getPatients();
+});
+
+
+const getPatients = async () => {
+    const data = await httpGet(httpPatients);
+    patientsList.value = patientMapToTableView(data);
+}
+
+const searchPatient = async (value) => {
+    const payload = {
+        "full_name": value
+    }
+
+    const data = await httpPost(httpPostFindAppointment, payload);
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
+}
+
+const deletePatient = async (value) => {
+    const payload = {
+        "id": value
+    }
+
+    const response = await httpDelete(httpPatients, payload);
+    if(response.status === 200){
+        toast.success(response.data['message'] ?? "Patient successfully deleted.");
+        await getPatients();
+    } else {
+        toast.error("Error deleting Patient.");
+    }
+}
 
 </script>
 
@@ -67,95 +63,55 @@ const patients = [
             
             <!-- add patient -->
             <div class="flex justify-end">
-                <PatientDialog>
+                <PatientDialog @submitted="getPatients">
                     <template #triggerbutton>
                         <CustomButton isAdd="true" text="Add Patient" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300"></CustomButton>
                     </template>
                 </PatientDialog>
             </div>
                     
-
             <!-- table -->
-            <div class="flex flex-col mt-5 bg-white p-6 rounded-lg">
-                <div class="flex">
-                    <h1 class="flex-1 text-3xl font-bold mb-5">Patients</h1>
-                    <!-- dropdown button -->
-                    <DropdownMenu :options="monthOptions"/>           
-                </div>
+            <TableView 
+            class="mt-20 h-full" 
+            title="Appointments" 
+            :items="patientsList" 
+            :searchbarFunction="searchPatient" 
+            :parser="patientMapToTableView" 
+            :hasDateFilter="false" 
+            :hasStatusFilter="false" 
+            >
+                <template #customHeader>
+                    <th scope="col" class="px-6 py-3">
+                        Actions
+                    </th>
+                </template>
+                <template #customrow="{ item }">
+                    <td class="px-6 py-4">
+                        <PatientDialog 
+                            title="Edit Patient"
+                            :patient="item"
+                            :isEdit="true",
+                            @submitted="getPatients"
+                        >
+                            <template #triggerbutton>
+                                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            </template>
+                        </PatientDialog>
+                        
+                        <DeleteDialog :deleteHandler="() => deletePatient(item.id)">
+                            <template #message>
+                                <strong class="text-red-500">Appointment details:</strong>
+                                <ul>
+                                    <li><strong>Name:</strong> {{ item.full_name }}</li>
+                                    <li><strong>Reason:</strong> {{ item.reason }}</li>
+                                    <li><strong>Date and Time:</strong> {{ item.date }}</li>
+                                </ul>
+                            </template>
+                        </DeleteDialog>
+                    </td>
+                </template>
+            </TableView>
 
-                <!-- table -->
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="bg-gray-200 text-xs text-gray-700 uppercase">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">
-                                    Patient
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Patient name
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Reason
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Date and Time
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Queue
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Status
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bg-white hover:bg-gray-50" v-for="patient in patients" :key="patient.id">
-                                <td class="px-6 py-4 text-black">
-                                    <img :src="samplepatient" alt="">
-                                </td>
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    {{patient.name}}
-                                </th>
-                                <td class="px-6 py-4 text-black">
-                                    {{patient.reason}}
-                                </td>
-                                <td class="px-6 py-4 text-black">
-                                    {{patient.date}}
-                                </td>
-                                <td class="px-6 py-4 text-black">
-                                    1
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="bg-dashboard-status-done text-center text-white rounded-lg py-1">
-                                        Done
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                        <PatientDialog 
-                                            title="Edit Patient",
-                                            :name="patient.name"
-                                            :reason="patient.reason"
-                                            :dateAndTime="patient.date"
-                                        >
-                                            <template #triggerbutton>
-                                                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                                            </template>
-                                        </PatientDialog>
-                                    
-                                    <!-- <DeletePatientDialog
-                                        :name="patient.name"
-                                        :reason="patient.reason"
-                                        :dateAndTime="patient.date"
-                                    ></DeletePatientDialog> -->
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
            
         </div>
     </Navigation>

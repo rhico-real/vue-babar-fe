@@ -32,7 +32,6 @@ const currentTitle = ref(props.title);
 
 
 watch(() => props.title, (newVal) => {
-    console.log(newVal);
     currentTitle.value = newVal;
 });
 

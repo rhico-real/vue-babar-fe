@@ -104,7 +104,6 @@ watch(statusFilter, async (val) => {
         filteredItems.value = props.parser(data)
     } else {
         filteredItems.value = props.items
-        toast.error("No data found.");
     }
 })
 
@@ -130,7 +129,6 @@ watch(filteredDate, async (val) => {
     filteredItems.value = props.parser(data)
   } else {
     filteredItems.value = props.items
-    toast.error("No data found for " + val + ".");
   }
 })
 const clearDateFilter = () => {

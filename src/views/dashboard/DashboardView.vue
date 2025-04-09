@@ -7,12 +7,16 @@ import { onMounted, ref } from 'vue';
 import { BASEURL, httpGet, httpPost } from '@/utils/http_config.js';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
+import { useToast } from 'vue-toastification';
 
 const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
 const httpGetPatients = `${BASEURL}/api/patients/`;
 
 const httpPostFindAppointment = `${BASEURL}/api/filter_appointment/`;
 const httpPostFindPatient = `${BASEURL}/api/filter_patient/`;
+
+
+const toast = useToast();
 
 const appointmentsList = ref([]);
 const patientsList = ref([]);
@@ -39,7 +43,11 @@ const searchAppointments = async (value) => {
     }
 
     const data = await httpPost(httpPostFindAppointment, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 
 const searchPatients= async (value) => {
@@ -48,7 +56,11 @@ const searchPatients= async (value) => {
     }
 
     const data = await httpPost(httpPostFindPatient, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 
 const filterByDateAppointments = async (value) => {
@@ -57,7 +69,11 @@ const filterByDateAppointments = async (value) => {
     }
 
     const data = await httpPost(httpPostFindAppointment, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 
 const filterByStatusAppointments = async (value) => {
@@ -66,7 +82,11 @@ const filterByStatusAppointments = async (value) => {
     }
 
     const data = await httpPost(httpPostFindAppointment, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 </script>
 

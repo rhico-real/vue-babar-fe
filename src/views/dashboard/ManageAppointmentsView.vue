@@ -34,7 +34,11 @@ const searchAppointments = async (value) => {
     }
 
     const data = await httpPost(httpPostFindAppointment, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 
 const filterByDateAppointments = async (value) => {
@@ -43,7 +47,11 @@ const filterByDateAppointments = async (value) => {
     }
 
     const data = await httpPost(httpPostFindAppointment, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 
 const filterByStatusAppointments = async (value) => {
@@ -52,7 +60,11 @@ const filterByStatusAppointments = async (value) => {
     }
 
     const data = await httpPost(httpPostFindAppointment, payload);
-    return data;
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+    }
 }
 
 const deleteAppointment = async (value) => {
@@ -79,7 +91,7 @@ const deleteAppointment = async (value) => {
             
             <!-- add patient -->
             <div class="flex justify-end">
-                <AppointmentDialog>
+                <AppointmentDialog @submitted="getAppointments">
                     <template #triggerbutton>
                         <CustomButton isAdd="true" text="Add Appointment" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300"></CustomButton>
                     </template>
@@ -88,7 +100,16 @@ const deleteAppointment = async (value) => {
                     
 
             <!-- table -->
-            <TableView class="mt-20" title="Appointments" :items="appointmentsList" :searchbarFunction="searchAppointments" :parser="appointmentMapToTableView" :filterByDateFunction="filterByDateAppointments" :hasDateFilter="true" :hasStatusFilter="true" :filterByStatusFunction="filterByStatusAppointments">
+            <TableView 
+            class="mt-20 h-full" 
+            title="Appointments" 
+            :items="appointmentsList" 
+            :searchbarFunction="searchAppointments" 
+            :parser="appointmentMapToTableView" 
+            :filterByDateFunction="filterByDateAppointments" 
+            :hasDateFilter="true" 
+            :hasStatusFilter="true" 
+            :filterByStatusFunction="filterByStatusAppointments">
                 <template #customHeader>
                     <th scope="col" class="px-6 py-3">
                         Actions
@@ -99,7 +120,8 @@ const deleteAppointment = async (value) => {
                         <AppointmentDialog 
                             title="Edit Appointment"
                             :appointment="item"
-                            :isEdit="true"
+                            :isEdit="true",
+                            @submitted="getAppointments"
                         >
                             <template #triggerbutton>
                                 <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>

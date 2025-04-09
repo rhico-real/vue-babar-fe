@@ -11,56 +11,93 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea'
-import { reactive, defineProps, onMounted } from 'vue';
+import { reactive, defineProps, onMounted, PropType } from 'vue';
+import { BASEURL, httpPost, httpPatch } from '@/utils/http_config.js';
+import { AppointmentModel } from '@/models/appointments/appointment_model';
+import { mapFormToPayload } from '@/utils/map_helper';
+import PhoneTextField  from '@/components/PhoneTextField.vue';
+import { useToast } from 'vue-toastification';
+import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
+import { DropdownOption } from '@/components/dropdown/dropdownoptions';
 
-const form = reactive({
-    file: null,
-    name: '',
-    reason: '',
-    dateAndTime: ''
-});
+const toast = useToast();
 
-const addPatient = () => {
-    const payload = {
-        'file': form.file,
-        'name': form.name,
-        'reason': form.reason,
-        'date_and_time': form.dateAndTime
-    };
-
-    console.log(payload);
-};
-
-const uploadFile = (event) => {
-  form.file = event.target.files[0];
-};
+const httpPatients = `${BASEURL}/api/patients/`;
 
 const props = defineProps({
   title: {
     type: String,
     default: "Add Patient"
   },
-  name: {
-    type: String,
-    default: ""
+  patient: {
+    type: Object as PropType<AppointmentModel>
   },
-  reason: {
-    type: String,
-    default: ""
-  },
-  dateAndTime: {
-    type: String,
-    default: ""
+  isEdit: {
+    type: Boolean,
+    default: false
   }
 });
 
 onMounted(() => {
-    form.name = props.name,
-    form.reason = props.reason,
-    form.dateAndTime = props.dateAndTime
+    if(props.patient){
+        console.log(props.patient);
+
+        const fullName = props.patient.full_name || '';
+        const nameParts = fullName.trim().split(' ');
+
+        form.first_name = nameParts[0] || '';
+        form.middle_name = nameParts.length === 3 ? nameParts[1] : '';
+        form.last_name = nameParts.length >= 2 ? nameParts[nameParts.length - 1] : '';
+
+        Object.assign(form, {...props.patient, full_name: undefined});
+    }
 })
 
+const form = reactive({
+    id: '',
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    email: '',
+    phone_number: '',
+    date: '',
+    reason: '',
+    photo: ''
+});
+
+const addPatient = async () => {
+    const payload = mapFormToPayload(form, ['id'])
+    const data = await httpPost(httpPatients, payload);
+
+    if(data.status === 200 || data.status === 201){
+        toast.success("Successfully created Patient.");
+    }else {
+        toast.error("Error creating Patient.");
+    }
+};
+
+const editPatient = async () => {
+    const payload = mapFormToPayload(form, []);
+    const data = await httpPatch(httpPatients, payload);
+
+    if(data.status === 200){
+        toast.success("Successfully updated Patient.");
+    }else {
+        toast.error("Error updating Patient.");
+    }
+};
+
+const emit = defineEmits(['submitted']);
+
+const handleSubmit = async () => {
+    if(props.isEdit){
+       await editPatient();
+    } else {
+       await addPatient();
+    }
+
+    emit('submitted');
+}
 </script>
 
 <template>
@@ -79,38 +116,60 @@ onMounted(() => {
 
             <!-- contents -->
             <div class="grid gap-4 py-4">
-                <div class="grid grid-cols-4 items-center gap-4">
+                <div v-if="patient"  class="grid grid-cols-4 items-center gap-4">
                     <Label for="photo" class="text-right">
-                        Photo
+                        Id
                     </Label>
-                    <Input @change="uploadFile" id="photo" type="file" class="col-span-3" />
+                    <Input v-model="form.id" id="id" class="col-span-3" disabled/>
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="name" class="text-right">
-                        Name
+                        First Name
                     </Label>
-                    <Input v-model="form.name" id="name"class="col-span-3" />
+                    <Input v-model="form.first_name" id="name"class="col-span-3" />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="name" class="text-right">
+                        Middle Name
+                    </Label>
+                    <Input v-model="form.middle_name" id="name"class="col-span-3" />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="name" class="text-right">
+                        Last Name
+                    </Label>
+                    <Input v-model="form.last_name" id="name"class="col-span-3" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="reason" class="text-right">
-                        Reason
+                        Email
                     </Label>
-                    <Textarea v-model="form.reason" class="col-span-3" placeholder="PCOS, Checkup, etc." />
+                    <Input v-model="form.email" type="email" class="col-span-3" placeholder="juandelacruz@email.com" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="datetime" class="text-right">
-                        Date and Time
+                        Phone Number
                     </Label>
-                    <Input v-model="form.dateAndTime" id="datetime" type="datetime-local" class="col-span-3" />
+                    <PhoneTextField v-model="form.phone_number" class="col-span-3"></PhoneTextField>
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="datetime" class="text-right">
+                        Reason
+                    </Label>
+                    <Input v-model="form.reason" id="reason" class="col-span-3" />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="datetime" class="text-right">
+                        Photo
+                    </Label>
+                    <Input v-model="form.photo" id="photo" type="file" class="col-span-3" /> 
                 </div>
             </div>
             <!-- end contents -->
 
             <DialogFooter>
                 <DialogClose>
-                    <CustomButton @click="addPatient" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300" text="Submit">
-                        Save changes
-                    </CustomButton>
+                    <CustomButton @click="handleSubmit" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300" text="Submit"></CustomButton>
                 </DialogClose>
             </DialogFooter>
         </DialogContent>

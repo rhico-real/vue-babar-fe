@@ -11,14 +11,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea'
 import { reactive, defineProps, onMounted, PropType } from 'vue';
 import { BASEURL, httpPost, httpPatch } from '@/utils/http_config.js';
 import { AppointmentModel } from '@/models/appointments/appointment_model';
 import { mapFormToPayload } from '@/utils/map_helper';
 import PhoneTextField  from '@/components/PhoneTextField.vue';
 import { useToast } from 'vue-toastification';
-import { stat } from 'fs';
+import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
+import { DropdownOption } from '@/components/dropdown/dropdownoptions';
 
 const toast = useToast();
 
@@ -67,7 +67,7 @@ const addAppointment = async () => {
 };
 
 const editAppointment = async () => {
-    const payload = mapFormToPayload(form, ['status'])
+    const payload = mapFormToPayload(form, []);
     const data = await httpPatch(httpUpdateAppointment, payload);
 
     if(data.status === 200){
@@ -77,12 +77,16 @@ const editAppointment = async () => {
     }
 };
 
-const handleSubmit = () => {
+const emit = defineEmits(['submitted']);
+
+const handleSubmit = async () => {
     if(props.isEdit){
-        editAppointment();
+       await editAppointment();
     } else {
-        addAppointment();
+       await addAppointment();
     }
+
+    emit('submitted');
 }
 </script>
 
@@ -130,7 +134,7 @@ const handleSubmit = () => {
                     <Label for="datetime" class="text-right">
                         Date
                     </Label>
-                    <Input v-model="form.date" id="datetime" type="datetime-local" class="col-span-3" />
+                    <Input v-model="form.date" id="date" type="date" class="col-span-3" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="datetime" class="text-right">
@@ -138,12 +142,12 @@ const handleSubmit = () => {
                     </Label>
                     <Input v-model="form.reason" id="reason" class="col-span-3" />
                 </div>
-                <!-- <div class="grid grid-cols-4 items-center gap-4">
+                <div v-if="isEdit" class="grid grid-cols-4 items-center gap-4">
                     <Label for="datetime" class="text-right">
                         Status
                     </Label>
-                    <Input v-model="form.dateAndTime" id="datetime" type="datetime-local" class="col-span-3" />
-                </div> -->
+                    <DropdownMenu class="w-full" v-model="form.status" :title="form.status" :option="DropdownOption.STATUS"/>    
+                </div>
             </div>
             <!-- end contents -->
 

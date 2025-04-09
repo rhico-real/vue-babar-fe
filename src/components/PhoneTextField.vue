@@ -21,8 +21,10 @@
   // Computed property to add the +63 prefix automatically
   const phoneNumberWithPrefix = computed({
     get() {
-      // Ensure the phone number starts with +63
-      return form.phone_number.startsWith('+63') ? form.phone_number : '+63' + form.phone_number;
+      if (props.modelValue.startsWith('+63')) {
+        return props.modelValue;
+      }
+      return '+63' + props.modelValue.replace(/^0/, '');
     },
     set(newValue) {
       emit('update:modelValue', newValue);
