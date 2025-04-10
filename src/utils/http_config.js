@@ -29,19 +29,20 @@ export const httpGet = async (endpoint) => {
     }
 }
 
-export const httpPost = async (endpoint, payload) => {
-    try{
-        const response = await axios.post(endpoint, payload ,headers());
+export const httpPost = async (endpoint, payload, hasHeaders = true) => {
+    try {
+        const config = hasHeaders ? headers() : undefined;
+        const response = await axios.post(endpoint, payload, config);
         return response;
-    }catch(error){
-        if(error.status == 401){
+    } catch (error) {
+        if (error.status === 401) {
             logout();
         } else {
             console.error(error);
             return error;
         }
     }
-}
+};
 
 export const httpPatch = async (endpoint, payload) => {
     try{

@@ -4,6 +4,9 @@ import axios from 'axios';
 import { useRoute, RouterLink } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import Button from '@/components/Button.vue';
+import { BASEURL, httpPost } from '@/utils/http_config.js';
+
+const httpFindAppointment = `${BASEURL}/api/find_appointment_by_reference/`;
 
 const route = useRoute();
 const toast = useToast();
@@ -21,16 +24,9 @@ onMounted( async () => {
         const payload = {
             'reference_code': referenceCode
         };
+        
+        const response = await httpPost(httpFindAppointment, payload, false);
 
-        const response = await axios.post(
-            'http://127.0.0.1:8000/api/find_appointment_by_reference/', 
-            payload, 
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQyNzQzNjY1LCJpYXQiOjE3NDI2NTcyNjUsImp0aSI6IjhhYjkxOWU5ZTk4ZDQyMDdhODFiMjU2YjY1OGQxOTQ2IiwidXNlcl9pZCI6MX0.fODyrRIFI_r48Nau6MzW1efoJBfMq_5PrtI-3tNXzd4'
-                }
-            });
         state.numberOnQueue = response.data['queue_number'];
         state.timeEstimate = response.data['time_estimate'];
         state.date = response.data['date'];

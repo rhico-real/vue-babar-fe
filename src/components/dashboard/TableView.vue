@@ -186,6 +186,9 @@ const clearDateFilter = () => {
                             <span v-if="key.toLowerCase() === 'status'">
                                 <DropdownMenu class="w-full" :title="item[key]" :option="DropdownOption.STATUS" :isDisabled="true"/>    
                             </span>
+                            <span v-else-if="key.toLowerCase() === 'photo' && item[key]">
+                                <img class="bg-gray-300 h-10 w-10" :src="item[key]" alt="">
+                            </span>
                             <span v-else>{{ item[key] ?? "N/A" }}</span>
                         </td>
                         <slot name="customrow" :item="item" :index="itemIndex"></slot>

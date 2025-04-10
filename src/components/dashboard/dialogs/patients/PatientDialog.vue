@@ -11,18 +11,17 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { reactive, defineProps, onMounted, PropType } from 'vue';
+import { reactive, defineProps, onMounted, watch, ref, PropType } from 'vue';
 import { BASEURL, httpPost, httpPatch } from '@/utils/http_config.js';
 import { AppointmentModel } from '@/models/appointments/appointment_model';
 import { mapFormToPayload } from '@/utils/map_helper';
-import PhoneTextField  from '@/components/PhoneTextField.vue';
+import PhoneTextField from '@/components/PhoneTextField.vue';
 import { useToast } from 'vue-toastification';
-import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
-import { DropdownOption } from '@/components/dropdown/dropdownoptions';
 
 const toast = useToast();
 
 const httpPatients = `${BASEURL}/api/patients/`;
+const httpUploadPhotoPatient = `${BASEURL}/api/upload_patient_photo/`;
 
 const props = defineProps({
   title: {
@@ -38,39 +37,58 @@ const props = defineProps({
   }
 });
 
-onMounted(() => {
-    if(props.patient){
-        console.log(props.patient);
-
-        const fullName = props.patient.full_name || '';
-        const nameParts = fullName.trim().split(' ');
-
-        form.first_name = nameParts[0] || '';
-        form.middle_name = nameParts.length === 3 ? nameParts[1] : '';
-        form.last_name = nameParts.length >= 2 ? nameParts[nameParts.length - 1] : '';
-
-        Object.assign(form, {...props.patient, full_name: undefined});
-    }
-})
-
-const form = reactive({
-    id: '',
-    first_name: '',
-    middle_name: '',
-    last_name: '',
-    email: '',
-    phone_number: '',
-    date: '',
-    reason: '',
-    photo: ''
+// Initialize with empty form
+const getEmptyForm = () => ({
+  id: '',
+  first_name: '',
+  middle_name: '',
+  last_name: '',
+  email: '',
+  phone_number: '',
+  reason: ''
 });
+
+const form = reactive(getEmptyForm());
+const photo = reactive({ file: null });
+const isDialogOpen = ref(false);
+
+// Reset form when dialog opens
+const resetForm = () => {
+  const emptyForm = getEmptyForm();
+  Object.keys(form).forEach(key => {
+    form[key] = emptyForm[key];
+  });
+  photo.file = null;
+};
+
+// Watch for dialog open/close
+const handleDialogChange = (open) => {
+  isDialogOpen.value = open;
+  
+  if (open) {
+    // When dialog opens
+    if (props.isEdit && props.patient) {
+      // Edit mode: populate with patient data
+      Object.assign(form, {...props.patient, full_name: undefined});
+    } else {
+      // Add mode: reset to empty form
+      resetForm();
+    }
+  }
+};
 
 const addPatient = async () => {
     const payload = mapFormToPayload(form, ['id'])
     const data = await httpPost(httpPatients, payload);
 
     if(data.status === 200 || data.status === 201){
-        toast.success("Successfully created Patient.");
+        if (photo.file) {
+            const patientId = data.data?.id ?? form.id;
+            toast.success("Successfully created Patient. Uploading Photo.");
+            await uploadPhoto(patientId, photo.file);
+        } else {
+            toast.success("Successfully created Patient.");
+        }
     }else {
         toast.error("Error creating Patient.");
     }
@@ -81,9 +99,43 @@ const editPatient = async () => {
     const data = await httpPatch(httpPatients, payload);
 
     if(data.status === 200){
-        toast.success("Successfully updated Patient.");
+        if (photo.file) {
+            const patientId = data.data?.id ?? form.id;
+            toast.success("Successfully updated Patient. Updating Photo.");
+            await uploadPhoto(patientId, photo.file);
+        } else {
+            toast.success("Successfully updated Patient.");
+        }
     }else {
         toast.error("Error updating Patient.");
+    }
+};
+
+const uploadPhoto = async (patientId, file) => {
+    const formData = new FormData();
+    formData.append("id", patientId);
+    formData.append("photo", file);
+
+    try {
+        const response = await httpPost(httpUploadPhotoPatient, formData);
+        
+        if (response.status === 200) {
+            toast.success("Photo uploaded successfully.");
+            await setTimeout(() => {
+                toast.info("Please wait for a couple of minutes for the photo to reflect.")
+            }, 2000);
+        } else {
+            toast.error("Failed to upload photo.");
+        }
+    } catch (error) {
+        toast.error(error.response?.data?.message || "Upload error.");
+    }
+};
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        photo.file = file;
     }
 };
 
@@ -101,7 +153,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-     <Dialog>
+     <Dialog @update:open="handleDialogChange">
         <DialogTrigger as-child>
             <slot name="triggerbutton"></slot>            
         </DialogTrigger>
@@ -116,7 +168,7 @@ const handleSubmit = async () => {
 
             <!-- contents -->
             <div class="grid gap-4 py-4">
-                <div v-if="patient"  class="grid grid-cols-4 items-center gap-4">
+                <div v-if="props.isEdit && props.patient" class="grid grid-cols-4 items-center gap-4">
                     <Label for="photo" class="text-right">
                         Id
                     </Label>
@@ -126,19 +178,19 @@ const handleSubmit = async () => {
                     <Label for="name" class="text-right">
                         First Name
                     </Label>
-                    <Input v-model="form.first_name" id="name"class="col-span-3" />
+                    <Input v-model="form.first_name" id="name" class="col-span-3" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="name" class="text-right">
                         Middle Name
                     </Label>
-                    <Input v-model="form.middle_name" id="name"class="col-span-3" />
+                    <Input v-model="form.middle_name" id="name" class="col-span-3" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="name" class="text-right">
                         Last Name
                     </Label>
-                    <Input v-model="form.last_name" id="name"class="col-span-3" />
+                    <Input v-model="form.last_name" id="name" class="col-span-3" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="reason" class="text-right">
@@ -162,7 +214,7 @@ const handleSubmit = async () => {
                     <Label for="datetime" class="text-right">
                         Photo
                     </Label>
-                    <Input v-model="form.photo" id="photo" type="file" class="col-span-3" /> 
+                    <Input id="photo" type="file" class="col-span-3" @change="handleFileUpload" /> 
                 </div>
             </div>
             <!-- end contents -->

@@ -73,7 +73,7 @@ const deletePatient = async (value) => {
             <!-- table -->
             <TableView 
             class="mt-20 h-full" 
-            title="Appointments" 
+            title="Patients" 
             :items="patientsList" 
             :searchbarFunction="searchPatient" 
             :parser="patientMapToTableView" 

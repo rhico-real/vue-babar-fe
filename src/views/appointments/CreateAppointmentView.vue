@@ -5,15 +5,19 @@ import { reactive } from 'vue';
 import axios from 'axios';
 import { useToast } from 'vue-toastification';
 import Navbar from '@/components/Navbar.vue';
+import { BASEURL, httpPost } from '@/utils/http_config.js';
 
 const toast = useToast();
 const router = useRouter();
+
+const httpAddAppointment = `${BASEURL}/api/add_appointment/`;
 
 const form = reactive({
     full_name: '',
     email: '',
     phone_number: '',
-    date: ''
+    date: '',
+    reason: ''
 });
 
 const submit = async () => {
@@ -21,11 +25,12 @@ const submit = async () => {
         'full_name': form.full_name,
         'email': form.email,
         'phone_number': form.phone_number,
-        'date': form.date
+        'date': form.date,
+        'reason': form.reason
     };
 
     try{
-        const response = await axios.post('http://127.0.0.1:5000/api/add_appointment/', payload);
+        const response = await httpPost(httpAddAppointment, payload, false);
         const referenceCode = response.data['appointment']['reference_code'];
 
         router.push(`/appointment/${referenceCode}`);
@@ -66,6 +71,11 @@ const submit = async () => {
                 <div class="flex flex-col mt-5 mb-2">
                     <label class="mb-2 text-md font-semibold">Date of Appointment</label>
                     <input required v-model="form.date" class="border-2 px-2 py-1" type="date" name="fullname" placeholder="Enter Date of Appointment">
+                </div>
+                <!-- Date of Appointment -->
+                <div class="flex flex-col mt-5 mb-2">
+                    <label class="mb-2 text-md font-semibold">Reason</label>
+                    <input required v-model="form.reason" class="border-2 px-2 py-1" name="reason" placeholder="PCOS, OB visit, etc.">
                 </div>
                 <!-- Book Appointment button -->
                  <Button class="mt-16" text="Book Appointment"></Button>
