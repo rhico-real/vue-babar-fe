@@ -15,15 +15,10 @@ interface CalendarEvent {
   title: string;
   details: string;
   date: Date;
+  status: string
 }
 
 const events = ref<CalendarEvent[]>([
-  {
-    id: 'sample-event',
-    title: 'Demo Event',
-    details: 'This is a sample event',
-    date: new Date(),
-  }
 ]);
 
 // Calendar navigation
@@ -165,6 +160,7 @@ const getAppointmentsForMonth = async (date?: Date) => {
       title: appointment.full_name,
       details: appointment.reason,
       date: new Date(appointment.date),
+      status: appointment.status
     }
 
     events.value.push(eventMap);
@@ -173,11 +169,9 @@ const getAppointmentsForMonth = async (date?: Date) => {
 
 // Set initial sample event to today
 onMounted(() => {
-  const today = new Date();
-  events.value[0].date = today;
-  console.log('Initial events:', events.value);
   getAppointmentsForMonth()
 });
+
 </script>
 
 <template>
@@ -237,17 +231,16 @@ onMounted(() => {
             ]"
           >
             <!-- Make the entire cell clickable using the dialog -->
-            <AddEventCalendarDialog 
+            <!-- <AddEventCalendarDialog 
               v-if="day.isCurrentMonth && day.date"
               :date="day.date ? formatDate(day.date) : ''"
               @add-event="addEvent"
             >
               <template #triggerbutton>
-                <!-- Invisible button that covers the entire cell -->
                 <button class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                 </button>
               </template>
-            </AddEventCalendarDialog>
+            </AddEventCalendarDialog> -->
 
             <!-- Day number -->
             <div 
@@ -268,7 +261,15 @@ onMounted(() => {
                   @add-event="updateEvent"
                 >
                   <template #triggerbutton>
-                    <div class="event-card p-1 mb-1 text-left text-xs rounded cursor-pointer z-10 relative">
+                    <div 
+                      :class="[
+                        'p-1 mb-1 text-left text-xs rounded cursor-pointer z-10 relative',
+                        event.status === 'P' ? 'bg-dashboard-status-pending text-white' : 
+                        event.status === 'D' ? 'bg-green-500 text-white' : 
+                        event.status === 'NS' ? 'bg-red-500 text-white' : 
+                        'bg-blue-500 text-white'
+                      ]"
+                    >
                       <div class="font-semibold">{{ event.title }}</div>
                       <div v-if="event.details" class="text-xs">{{ event.details }}</div>
                     </div>
@@ -312,9 +313,11 @@ onMounted(() => {
   background-color: #eff6ff !important;
 }
 
-.event-card {
-  background-color: #3b82f6;
-  color: white;
+/* Common styles for all event cards, regardless of status */
+.bg-dashboard-status-pending,
+.bg-green-500,
+.bg-red-500,
+.bg-blue-500 {
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   word-break: break-word;
@@ -322,7 +325,10 @@ onMounted(() => {
   transition: transform 0.1s ease;
 }
 
-.event-card:hover {
+.bg-dashboard-status-pending:hover,
+.bg-green-500:hover,
+.bg-red-500:hover,
+.bg-blue-500:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

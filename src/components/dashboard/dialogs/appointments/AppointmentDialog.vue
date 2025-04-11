@@ -10,6 +10,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { reactive, defineProps, ref, PropType } from 'vue';
 import { httpPost, httpPatch, httpAddAppointment, httpUpdateAppointment} from '@/utils/http_config.js';
@@ -160,7 +161,7 @@ const handleSubmit = async () => {
                     <Label for="datetime" class="text-right">
                         Reason
                     </Label>
-                    <Input v-model="form.reason" id="reason" class="col-span-3" />
+                    <Textarea v-model="form.reason" id="reason" class="col-span-3" />
                 </div>
                 <div v-if="isEdit" class="grid grid-cols-4 items-center gap-4">
                     <Label for="datetime" class="text-right">
