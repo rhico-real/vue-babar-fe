@@ -5,6 +5,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
@@ -110,6 +111,7 @@ const formattedEventDate = computed(() => {
             }">
             <DialogHeader>
                 <DialogTitle>{{ 'View Event for ' + date }}</DialogTitle>
+                <DialogDescription>View the details of this calendar event.</DialogDescription>
             </DialogHeader>
 
             <!-- contents -->
