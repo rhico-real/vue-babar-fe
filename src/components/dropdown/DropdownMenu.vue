@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref, watch } from 'vue';
-import type { PropType } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 import type { DropdownModel } from '../../types/dropdown';
 import { DropdownOption, monthOptions, statusOptions } from './dropdownoptions';
 
@@ -30,6 +29,13 @@ const emit = defineEmits<{
 
 const currentTitle = ref(props.title);
 
+watch(() => props.modelValue, (newVal) => {
+    if(!newVal || newVal === ''){
+        currentTitle.value = props.title;
+    } else {
+        currentTitle.value = newVal;
+    }
+})
 
 watch(() => props.title, (newVal) => {
     currentTitle.value = newVal;
@@ -74,19 +80,10 @@ const handleClickOption = (option: DropdownModel) => {
                 </button>
             </span>
         </div>
-      
+        
+        <!-- OPEN DROPDOWN -->
         <div v-if="isOpenDropdown" class="dropdown-menu">
             <div class="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-[9999]" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
-                <!-- Sample UI -->
-                <!-- <div class="py-1">
-                    <a href="javascript:void(0)" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >Account settings</a>
-                    <a href="javascript:void(0)" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >Support</a>
-                    <span role="menuitem" tabindex="-1" class="flex justify-between w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 cursor-not-allowed opacity-50" aria-disabled="true">New feature (soon)</span>
-                    <a href="javascript:void(0)" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left" role="menuitem" >License</a></div>
-                <div class="py-1">
-                    <a href="javascript:void(0)" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >Sign out</a>
-                </div> -->
-                
                 <!-- Month Dropdown -->
                 <div v-if="props.option === DropdownOption.MONTH">
                     <div v-for="option in monthOptions" :key="option.text">

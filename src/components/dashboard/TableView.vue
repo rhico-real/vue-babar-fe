@@ -131,9 +131,15 @@ watch(filteredDate, async (val) => {
     filteredItems.value = props.items
   }
 })
+
 const clearDateFilter = () => {
   filteredDate.value = null
 }
+
+const clearStatusFilter = () => {
+  statusFilter.value = '';
+}
+
 
 </script>
 
@@ -151,7 +157,10 @@ const clearDateFilter = () => {
             </div>
             
             <!-- dropdown button -->
-            <DropdownMenu v-model="statusFilter" class="mr-3" v-if="props.hasStatusFilter" title="Choose Status" :option="DropdownOption.STATUS"/>    
+            <DropdownMenu v-model="statusFilter" class="mr-3" v-if="props.hasStatusFilter" title="Choose Status" :option="DropdownOption.STATUS"/>
+            <Button v-if="statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
+                Clear Status
+            </Button>
             <DropdownMenu v-if="props.hasMonthFilter" :option="DropdownOption.MONTH"/>
             
             <Popover v-model:open="isPopoverOpen" v-if="props.hasDateFilter">

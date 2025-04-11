@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import notificationIcon from '@/assets/img/notification.png';
 import logo from '@/assets/img/logo-1.png';
 import profile from '@/assets/img/profile.png';
 import { useRoute, RouterLink } from 'vue-router';
 import LogoutDialog from '@/components/dashboard/dialogs/LogoutDialog.vue';
+import Input from '@/components/ui/input/Input.vue';
 
 const route = useRoute();
 
@@ -24,14 +25,27 @@ const sidebarNavs = [
     {
         title: 'Manage Patients',
         to: '/dashboard/manage-patients'
+    },
+    {
+        title: 'Calendar',
+        to: '/dashboard/calendar'
     }
 ];
 
 const sidebarCollapsed = ref(false);
+const searchQuery = ref('');
 
 const toggleSidebar = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value;
 };
+
+const filteredNavs = computed(() => {
+  if (!searchQuery.value) return sidebarNavs;
+  
+  return sidebarNavs.filter(nav => 
+    nav.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 
 </script>
 
@@ -47,10 +61,19 @@ const toggleSidebar = () => {
         </div>
         <!-- Logo -->
         <img v-if="!sidebarCollapsed" class="py-4 px-6" :src="logo" alt="BAS logo">
+        
+        <!-- Search Bar (Only visible when sidebar is expanded) -->
+        <div v-if="!sidebarCollapsed" class="px-4 mb-4">
+          <Input 
+            v-model="searchQuery"
+            placeholder="Search..." 
+            class="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-neutral-400"
+          />
+        </div>
   
         <!-- Navigation Links -->
         <div class="flex flex-col flex-1">
-          <div v-for="nav in sidebarNavs" :key="nav" class="flex">
+          <div v-for="nav in filteredNavs" :key="nav.to" class="flex">
             <RouterLink class="w-full" :to="nav.to">
               <div class="flex items-center py-4 px-4" :class="isActiveLink(nav.to) ? 'bg-dashboard-selected' : 'hover:bg-gray-500/50'">
                 <i class="pi pi-clock text-white pr-4"></i>
