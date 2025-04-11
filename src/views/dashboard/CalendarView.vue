@@ -2,6 +2,8 @@
 import Navigation from '@/components/dashboard/Navigation.vue';
 import { ref, computed, onMounted } from 'vue';
 import AddEventCalendarDialog from '@/components/dashboard/dialogs/calendar/AddEventCalendarDialog.vue';
+import { httpPost, httpPostFindAppointment } from '@/utils/http_config.js';
+import { mapToAppointmentModel as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 
 // Calendar State
 const currentMonth = ref(new Date().getMonth());
@@ -23,9 +25,6 @@ const events = ref<CalendarEvent[]>([
     date: new Date(),
   }
 ]);
-
-// Dialog State
-const selectedDate = ref<Date | null>(null);
 
 // Calendar navigation
 const goToPreviousMonth = () => {
@@ -116,12 +115,6 @@ function getEventsForDay(day: number) {
   });
 }
 
-// Handle date clicks - no longer needed since we use dialog directly
-const onDateClick = (date: Date) => {
-  console.log('Calendar date click:', date);
-  selectedDate.value = date;
-};
-
 // Add a new event - triggered by AddEventCalendarDialog
 const addEvent = (newEvent: CalendarEvent) => {
   console.log('Adding new event:', newEvent);
@@ -155,11 +148,35 @@ const isToday = (date: Date) => {
          date.getFullYear() === today.getFullYear();
 };
 
+const getAppointmentsForMonth = async (date?: Date) => {
+  const today = new Date();
+  const month = date ? date.getMonth() : today.getMonth();
+
+  const payload = {
+    'month': month + 1
+  }
+
+  const data = await httpPost(httpPostFindAppointment, payload);
+  const parsedData = appointmentMapToTableView(data.data);
+
+  for(var appointment of parsedData){
+    const eventMap = {
+      id: `appointment-${appointment.id}`,
+      title: appointment.full_name,
+      details: appointment.reason,
+      date: new Date(appointment.date),
+    }
+
+    events.value.push(eventMap);
+  }
+}
+
 // Set initial sample event to today
 onMounted(() => {
   const today = new Date();
   events.value[0].date = today;
   console.log('Initial events:', events.value);
+  getAppointmentsForMonth()
 });
 </script>
 

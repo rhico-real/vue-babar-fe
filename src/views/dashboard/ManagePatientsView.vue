@@ -2,15 +2,12 @@
 import Navigation from '@/components/dashboard/Navigation.vue';
 import PatientDialog from '@/components/dashboard/dialogs/patients/PatientDialog.vue';
 import CustomButton from '@/components/Button.vue';
-import { BASEURL, httpGet, httpPost, httpPatch, httpDelete } from '@/utils/http_config.js';
+import { httpGet, httpPost, httpDelete, httpPatients, httpPostFindPatient } from '@/utils/http_config.js';
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';
 import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
 import TableView from '@/components/dashboard/TableView.vue';
 import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
-
-const httpPatients = `${BASEURL}/api/patients/`;
-const httpPostFindAppointment = `${BASEURL}/api/filter_patient/`;
 
 const toast = useToast();
 
@@ -31,7 +28,7 @@ const searchPatient = async (value) => {
         "full_name": value
     }
 
-    const data = await httpPost(httpPostFindAppointment, payload);
+    const data = await httpPost(httpPostFindPatient, payload);
     if(data.status === 200){
         return data.data;
     } else {
@@ -44,12 +41,12 @@ const deletePatient = async (value) => {
         "id": value
     }
 
-    const response = await httpDelete(httpPatients, payload);
-    if(response.status === 200){
-        toast.success(response.data['message'] ?? "Patient successfully deleted.");
+    const data = await httpDelete(httpPatients, payload);
+    if(data.status === 200){
+        toast.success(data.data['message'] ?? "Patient successfully deleted.");
         await getPatients();
     } else {
-        toast.error("Error deleting Patient.");
+        toast.error(data['response']['data']['message'] ?? "Error deleting Patient.");
     }
 }
 

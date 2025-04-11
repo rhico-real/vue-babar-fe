@@ -4,15 +4,11 @@ import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
 import CustomButton from '@/components/Button.vue';
 import TableView from '@/components/dashboard/TableView.vue';
 
-import { BASEURL, httpGet, httpPost, httpPatch, httpDelete } from '@/utils/http_config.js';
+import { httpGet, httpPost, httpDelete, httpGetAppointments, httpPostFindAppointment, httpDeleteAppointment } from '@/utils/http_config.js';
 import { ref, onMounted } from 'vue';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import AppointmentDialog from '@/components/dashboard/dialogs/appointments/AppointmentDialog.vue';
 import { useToast } from 'vue-toastification';
-
-const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
-const httpPostFindAppointment = `${BASEURL}/api/filter_appointment/`;
-const httpDeleteAppointment = `${BASEURL}/api/delete_appointment/`;
 
 const toast = useToast();
 
@@ -72,12 +68,12 @@ const deleteAppointment = async (value) => {
         "id": value
     }
 
-    const response = await httpDelete(httpDeleteAppointment, payload);
-    if(response.status === 200){
-        toast.success(response.data['message'] ?? "Appointment successfully deleted.");
+    const data = await httpDelete(httpDeleteAppointment, payload);
+    if(data.status === 200){
+        toast.success(data.data['message'] ?? "Appointment successfully deleted.");
         await getAppointments();
     } else {
-        toast.error("Error deleting Appointment.");
+        toast.error(data['response']['data']['message'] ??  "Error deleting Appointment.");
     }
 }
 

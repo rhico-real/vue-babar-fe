@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { reactive, defineProps, onMounted, PropType } from 'vue';
-import { BASEURL, httpPost, httpPatch } from '@/utils/http_config.js';
+import { reactive, defineProps, ref, PropType } from 'vue';
+import { httpPost, httpPatch, httpAddAppointment, httpUpdateAppointment} from '@/utils/http_config.js';
 import { AppointmentModel } from '@/models/appointments/appointment_model';
 import { mapFormToPayload } from '@/utils/map_helper';
 import PhoneTextField  from '@/components/PhoneTextField.vue';
@@ -21,9 +21,6 @@ import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
 import { DropdownOption } from '@/components/dropdown/dropdownoptions';
 
 const toast = useToast();
-
-const httpUpdateAppointment = `${BASEURL}/api/update_appointment/`;
-const httpAddAppointment = `${BASEURL}/api/add_appointment/`;
 
 const props = defineProps({
   title: {
@@ -39,13 +36,8 @@ const props = defineProps({
   }
 });
 
-onMounted(() => {
-    if(props.appointment){
-        Object.assign(form, props.appointment);
-    }
-})
-
-const form = reactive({
+// Initialize with empty form
+const getEmptyForm = () => ({
     id: '',
     full_name: '',
     email: '',
@@ -55,6 +47,33 @@ const form = reactive({
     status: ''
 });
 
+const form = reactive(getEmptyForm());
+const isDialogOpen = ref(false);
+
+// Reset form when dialog opens
+const resetForm = () => {
+  const emptyForm = getEmptyForm();
+  Object.keys(form).forEach(key => {
+    form[key] = emptyForm[key];
+  });
+};
+
+// Watch for dialog open/close
+const handleDialogChange = (open) => {
+  isDialogOpen.value = open;
+  
+  if (open) {
+    // When dialog opens
+    if (props.isEdit && props.appointment) {
+      // Edit mode: populate with appointment data
+      Object.assign(form, {...props.appointment});
+    } else {
+      // Add mode: reset to empty form
+      resetForm();
+    }
+  }
+};
+
 const addAppointment = async () => {
     const payload = mapFormToPayload(form, ['status'])
     const data = await httpPost(httpAddAppointment, payload);
@@ -62,7 +81,7 @@ const addAppointment = async () => {
     if(data.status === 200 || data.status === 201){
         toast.success("Successfully created Appointment.");
     }else {
-        toast.error("Error creating Appointment.");
+        toast.error(data['response']['data']['message'] ?? "Error creating Appointment.");
     }
 };
 
@@ -70,10 +89,11 @@ const editAppointment = async () => {
     const payload = mapFormToPayload(form, []);
     const data = await httpPatch(httpUpdateAppointment, payload);
 
+    console.log(data);
     if(data.status === 200){
         toast.success("Successfully updated Appointment.");
     }else {
-        toast.error("Error updating Appointment.");
+        toast.error(data['response']['data']['message'] ?? "Error updating Appointment.");
     }
 };
 
@@ -91,7 +111,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-     <Dialog>
+     <Dialog @update:open="handleDialogChange">
         <DialogTrigger as-child>
             <slot name="triggerbutton"></slot>            
         </DialogTrigger>

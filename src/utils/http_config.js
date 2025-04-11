@@ -53,7 +53,7 @@ export const httpPatch = async (endpoint, payload) => {
             logout();
         } else {
             console.error(error);
-            return error.data;
+            return error;
         }
     }
 }
@@ -110,3 +110,15 @@ export const logout = async () => {
             }
         });
 }
+
+/// Endpoints:
+// Appointments
+export const httpUpdateAppointment = `${BASEURL}/api/update_appointment/`;
+export const httpAddAppointment = `${BASEURL}/api/add_appointment/`;
+export const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
+export const httpPostFindAppointment = `${BASEURL}/api/filter_appointment/`;
+export const httpDeleteAppointment = `${BASEURL}/api/delete_appointment/`;
+
+// Patients
+export const httpPatients = `${BASEURL}/api/patients/`;
+export const httpPostFindPatient = `${BASEURL}/api/filter_patient/`;
