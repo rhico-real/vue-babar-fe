@@ -12,7 +12,10 @@ export default {
   	extend: {
   		colors: {
   			background: '#fdfdfd',
-  			sidebar: '#3749A6',
+			landing: {
+				background: '#f7fdfd'
+			},
+  			main: '#3749A6',
   			dashboard: {
   				selected: '#4C61CC',
   				background: '#F5F6FA',

@@ -106,11 +106,11 @@ const register = async () => {
                     </div>
                     <!-- login button -->
                     <div>
-                        <Button v-if="loadingButton" disabled class="mt-5 w-full bg-sidebar">
+                        <Button v-if="loadingButton" disabled class="mt-5 w-full bg-main">
                             <Loader2 class="w-4 h-4 mr-2 animate-spin" />
                             Please wait
                         </Button>
-                        <Button v-if="!loadingButton" @click="register" class="mt-5 w-full bg-sidebar">Create Account</Button>
+                        <Button v-if="!loadingButton" @click="register" class="mt-5 w-full bg-main">Create Account</Button>
                     </div>
                     <div class="text-sm mt-16 text-center">
                         <p>Already Registered? <span class="hover:underline text-sidebar cursor-pointer">

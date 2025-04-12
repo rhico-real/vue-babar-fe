@@ -4,7 +4,7 @@ import { useRouter, RouterLink } from 'vue-router';
 import { reactive } from 'vue';
 import axios from 'axios';
 import { useToast } from 'vue-toastification';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/landing/v1/Navbar.vue';
 import { BASEURL, httpPost } from '@/utils/http_config.js';
 
 const toast = useToast();

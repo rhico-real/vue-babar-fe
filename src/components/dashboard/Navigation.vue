@@ -52,7 +52,7 @@ const filteredNavs = computed(() => {
 <template>
     <section class="h-screen flex">
       <!-- Sidebar Navigation (Collapsible) -->
-      <div :class="['flex', 'flex-col', sidebarCollapsed ? 'w-16' : 'w-56', 'bg-sidebar', 'h-screen', 'transition-width', 'duration-300']">
+      <div :class="['flex', 'flex-col', sidebarCollapsed ? 'w-16' : 'w-56', 'bg-main', 'h-screen', 'transition-width', 'duration-300']">
          <!-- Toggle Button -->
          <div class="flex items-center justify-end">
             <button @click="toggleSidebar" class="px-2 py-1 text-black focus:outline-none bg-gray-400/25 rounded-xl m-2">

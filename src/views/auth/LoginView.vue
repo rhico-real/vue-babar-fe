@@ -12,6 +12,8 @@ import axios from 'axios';
 import { useToast } from 'vue-toastification';
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'vue-router';
+import womanlogin from '@/assets/img/landing/woman-login.jpg'
+import Navbar from '@/components/landing/v1/Navbar.vue';
 
 const toast = useToast();
 const router = useRouter();
@@ -55,11 +57,12 @@ const login = async () => {
 </script>
 
 <template>
+    <Navbar/>
     <section :style="{backgroundImage: `url(${canvas})`}" class="bg-cover bg-center min-h-screen flex items-center justify-center">
         <!-- card -->
         <div class="flex w-3/4 bg-white rounded-lg shadow-lg overflow-hidden h-[600px]">
-            <div :style="{backgroundImage: `url(${background})`}" class="hidden bg-cover bg-center flex-1 lg:flex items-center justify-center w-full h-full">
-                <img :src="rocket" alt="Background" class="h-64 floating">
+            <div :style="{backgroundImage: `url(${womanlogin})`}" class="hidden bg-cover bg-center flex-1 lg:flex items-center justify-center w-full h-full">
+                <!-- <img :src="rocket" alt="Background" class="h-64 floating"> -->
             </div>
             <div class="flex flex-1 items-center justify-center flex-col h-full">
                 <img :src="logo" alt="Logo" class="h-16">
@@ -88,11 +91,11 @@ const login = async () => {
                     </div>
                     <!-- login button -->
                     <div>
-                        <Button v-if="loadingButton" disabled class="mt-5 w-full bg-sidebar">
+                        <Button v-if="loadingButton" disabled class="mt-5 w-full bg-main">
                             <Loader2 class="w-4 h-4 mr-2 animate-spin" />
                             Please wait
                         </Button>
-                        <Button v-if="!loadingButton" @click="login" class="mt-5 w-full bg-sidebar">Login</Button>
+                        <Button v-if="!loadingButton" @click="login" class="mt-5 w-full bg-main">Login</Button>
                     </div>
                     <div class="text-sm mt-16 text-center">
                         <p>Not registered yet? <span class="hover:underline text-sidebar cursor-pointer">
