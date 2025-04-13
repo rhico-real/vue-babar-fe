@@ -1,28 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
-
-// Create axios instance with base URL
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api', // Use environment variable or default to '/api'
-});
-
-// Add request interceptor for authentication
-api.interceptors.request.use(
-  (config) => {
-    // Get token from localStorage
-    const token = localStorage.getItem('access');
-    
-    // If token exists, add to headers
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+import { httpGet, httpGetProfile } from '@/utils/http_config.js';
 
 export const useUserProfileStore = defineStore('userProfile', {
   state: () => ({
@@ -52,8 +29,8 @@ export const useUserProfileStore = defineStore('userProfile', {
       this.error = null;
       
       try {
-        const response = await api.get('/auth/get_profile/');
-        this.profile = response.data;
+        const response = await httpGet(httpGetProfile);
+        this.profile = response;
         return this.profile;
       } catch (err) {
         console.error('Failed to fetch user profile:', err);

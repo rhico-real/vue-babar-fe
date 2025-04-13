@@ -1,11 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import notificationIcon from '@/assets/img/notification.png';
 import logo from '@/assets/img/logo-1.png';
 import profile from '@/assets/img/profile/profile.jpg';
 import { useRoute, RouterLink } from 'vue-router';
 import LogoutDialog from '@/components/dashboard/dialogs/LogoutDialog.vue';
 import Input from '@/components/ui/input/Input.vue';
+import { useUserProfileStore } from '@/stores/userProfile';
 
 const route = useRoute();
 
@@ -51,6 +52,12 @@ const filteredNavs = computed(() => {
   );
 });
 
+//profile
+const userProfileStore = useUserProfileStore();
+
+const userFullName = computed(() => userProfileStore.userFullName);
+const userRole = computed(() => userProfileStore.userRole);
+const userPhotoUrl = computed(() => userProfileStore.userPhoto || profile);
 </script>
 
 <template>
@@ -112,10 +119,10 @@ const filteredNavs = computed(() => {
             <div class="flex flex-1 items-center justify-end">
                 <img class="h-6 w-6 mr-6" :src="notificationIcon" alt="">
                 <RouterLink class="flex cursor-pointer" to="/profile">
-                  <img class="h-10 w-10 rounded-full object-cover" :src="profile" alt="profile">
+                  <img class="h-10 w-10 rounded-full object-cover" :src="userPhotoUrl" alt="profile">
                   <div class="flex flex-col ml-4">
-                      <p class="font-semibold">Jane Doe</p>
-                      <p class="text-sm">Admin</p>
+                      <p class="font-semibold">{{ userFullName || 'Jane Doe'}}</p>
+                      <p class="text-sm">{{ userRole || 'Guest'}}</p>
                   </div>
                 </RouterLink>
             </div>

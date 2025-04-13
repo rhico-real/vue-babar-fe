@@ -39,18 +39,18 @@ const form = reactive(getEmptyForm());
 
 // Update the form with profile data when available
 const updateFormFromProfile = () => {
-  if (userProfileStore.profile) {
-    form.id = userProfileStore.userId || '';
-    form.full_name = userProfileStore.userFullName || '';
-    
-    // Date joined or current date as fallback
-    if (userProfileStore.dateJoined) {
-      const date = new Date(userProfileStore.dateJoined);
-      form.date = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD for input[type=date]
+    if (userProfileStore.profile) {
+        form.id = userProfileStore.userId || '';
+        form.full_name = userProfileStore.userFullName || '';
+        
+        // Date joined or current date as fallback
+        if (userProfileStore.dateJoined) {
+        const date = new Date(userProfileStore.dateJoined);
+        form.date = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD for input[type=date]
+        }
+        
+        // Additional fields would be populated here if available in the profile
     }
-    
-    // Additional fields would be populated here if available in the profile
-  }
 };
 
 // Computed properties for the profile
@@ -62,7 +62,6 @@ const userPhotoUrl = computed(() => userProfileStore.userPhoto || profile); // F
 const refreshProfile = async () => {
   isLoading.value = true;
   try {
-    await userProfileStore.fetchProfile();
     updateFormFromProfile();
   } catch (error) {
     console.error('Error refreshing profile:', error);
@@ -73,11 +72,7 @@ const refreshProfile = async () => {
 
 // On component mount, fetch profile and update form
 onMounted(async () => {
-  if (!userProfileStore.isLoggedIn) {
     await refreshProfile();
-  } else {
-    updateFormFromProfile();
-  }
 });
 </script>
 

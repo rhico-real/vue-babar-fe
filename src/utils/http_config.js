@@ -122,3 +122,6 @@ export const httpDeleteAppointment = `${BASEURL}/api/delete_appointment/`;
 // Patients
 export const httpPatients = `${BASEURL}/api/patients/`;
 export const httpPostFindPatient = `${BASEURL}/api/filter_patient/`;
+
+// Profile
+export const httpGetProfile = `${BASEURL}/api/auth/get_profile/`;

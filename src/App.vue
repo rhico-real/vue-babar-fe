@@ -2,7 +2,9 @@
 import { RouterView } from 'vue-router';
 import { onMounted } from 'vue';
 import { useUserProfileStore } from '@/stores/userProfile';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const userProfileStore = useUserProfileStore();
 
 onMounted(async () => {
@@ -10,7 +12,7 @@ onMounted(async () => {
   try {
     await userProfileStore.fetchProfile();
   } catch (error) {
-    // Silent fail - the store will handle error state
+    toast.error("Profile fetch failed.");
     console.log('User not authenticated or profile fetch failed');
   }
 });
