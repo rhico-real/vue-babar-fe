@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import notificationIcon from '@/assets/img/notification.png';
 import logo from '@/assets/img/logo-1.png';
-import profile from '@/assets/img/profile.png';
+import profile from '@/assets/img/profile/profile.jpg';
 import { useRoute, RouterLink } from 'vue-router';
 import LogoutDialog from '@/components/dashboard/dialogs/LogoutDialog.vue';
 import Input from '@/components/ui/input/Input.vue';
@@ -16,19 +16,23 @@ const isActiveLink = (routePath) => {
 const sidebarNavs = [
     {
         title: 'Dashboard',
-        to: '/dashboard'
+        to: '/dashboard',
+        icon: 'pi-chart-line'
     },
     {
         title: 'Manage Appointments',
-        to: '/dashboard/manage-appointments'
+        to: '/dashboard/manage-appointments',
+        icon: 'pi-clock'
     },
     {
         title: 'Manage Patients',
-        to: '/dashboard/manage-patients'
+        to: '/dashboard/manage-patients',
+        icon: 'pi-user'
     },
     {
         title: 'Calendar',
-        to: '/dashboard/calendar'
+        to: '/dashboard/calendar',
+        icon: 'pi-calendar'
     }
 ];
 
@@ -76,17 +80,23 @@ const filteredNavs = computed(() => {
           <div v-for="nav in filteredNavs" :key="nav.to" class="flex">
             <RouterLink class="w-full" :to="nav.to">
               <div class="flex items-center py-4 px-4" :class="isActiveLink(nav.to) ? 'bg-dashboard-selected' : 'hover:bg-gray-500/50'">
-                <i class="pi pi-clock text-white pr-4"></i>
+                <i class="text-white pr-4" :class="['pi', nav.icon]"></i>
                 <p v-if="!sidebarCollapsed" class="text-white text-sm">{{ nav.title }}</p>
               </div>
             </RouterLink>
           </div>
         </div>
   
-        <!-- Settings & Logout -->
+        <!-- Back to Home, Settings & Logout -->
         <div class="flex flex-col py-10">
+          <RouterLink class="w-full" to="/">
+            <div class="flex items-center py-4 px-4 hover:bg-gray-500/50">
+              <i class="pi pi-home text-yellow-500 pr-4"></i>
+              <p v-if="!sidebarCollapsed" class="text-white text-sm">Back To Home</p>
+            </div>
+          </RouterLink>
           <RouterLink class="w-full" to="/dashboard/settings">
-            <div class="flex items-center py-4 px-4" :class="isActiveLink('/dashboard/settings') ? 'bg-dashboard-selected' : ''">
+            <div class="flex items-center py-4 px-4" :class="isActiveLink('/dashboard/settings') ? 'bg-dashboard-selected' : 'hover:bg-gray-500/50'">
               <i class="pi pi-cog text-white pr-4"></i>
               <p v-if="!sidebarCollapsed" class="text-white text-sm">Settings</p>
             </div>
@@ -101,11 +111,13 @@ const filteredNavs = computed(() => {
         <div class="flex w-full py-6 px-10">
             <div class="flex flex-1 items-center justify-end">
                 <img class="h-6 w-6 mr-6" :src="notificationIcon" alt="">
-                <img class="h-10 w-10 rounded-full" :src="profile" alt="">
-                <div class="flex flex-col ml-4">
-                    <p class="font-semibold">Jane Doe</p>
-                    <p class="text-sm">Admin</p>
-                </div>
+                <RouterLink class="flex cursor-pointer" to="/profile">
+                  <img class="h-10 w-10 rounded-full object-cover" :src="profile" alt="profile">
+                  <div class="flex flex-col ml-4">
+                      <p class="font-semibold">Jane Doe</p>
+                      <p class="text-sm">Admin</p>
+                  </div>
+                </RouterLink>
             </div>
         </div>
         <!-- main content -->

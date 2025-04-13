@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LandingPageView from '@/views/LandingPageView.vue';
+import LandingPageView from '@/views/landing/LandingPageView.vue';
 import CreateAppointmentView from '@/views/appointments/CreateAppointmentView.vue';
 import FindAppointmentView from '@/views/appointments/FindAppointmentView.vue';
 import AppointmentView from '@/views/appointments/AppointmentView.vue';
@@ -10,6 +10,7 @@ import LoginView from '@/views/auth/LoginView.vue';
 import RegisterView from '@/views/auth/RegisterView.vue';
 import ManageAppointmentsView from '@/views/dashboard/ManageAppointmentsView.vue';
 import CalendarView from '@/views/dashboard/CalendarView.vue';
+import ProfilePageView from '@/views/profile/ProfilePageView.vue';
 
 import { useToast } from "vue-toastification";
 
@@ -94,6 +95,20 @@ const dashboardRoutes = [
     }
 ];
 
+const profileRoutes = [
+    {
+        path: '/profile',
+        children: [
+            {
+                path: '',
+                name: 'profile',
+                component: ProfilePageView,
+                meta: { requiresAuth: true }
+            },
+        ]
+    }
+];
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -104,7 +119,8 @@ const router = createRouter({
         },
         ...authRoutes,
         ...appointmentRoutes,
-        ...dashboardRoutes
+        ...dashboardRoutes,
+        ...profileRoutes
     ]
 });
 

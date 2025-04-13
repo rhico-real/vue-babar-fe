@@ -46,7 +46,7 @@ const logoutFunction = async () => {
     <AlertDialogTrigger>
         <div class="flex hover:bg-red-500/100">
             <div :class="['flex', 'items-center', 'justify-center',  '', 'py-4', 'px-4', 'rounded-lg', 'cursor-pointer']">
-                <i class="pi pi-clock text-white pr-4"></i>
+                <i class="pi pi-reply text-red-500 pr-4"></i>
                 <p v-if="!sidebarCollapsed" class="text-white text-sm">Logout</p>
             </div>
         </div>

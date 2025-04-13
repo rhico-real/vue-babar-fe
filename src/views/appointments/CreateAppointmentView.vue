@@ -1,5 +1,5 @@
 <script setup>
-import Button from '@/components/Button.vue'
+import Button from '@/components/common/Button.vue'
 import { useRouter, RouterLink } from 'vue-router';
 import { reactive } from 'vue';
 import axios from 'axios';

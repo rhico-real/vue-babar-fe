@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CustomButton from '@/components/Button.vue';
+import CustomButton from '@/components/common/Button.vue';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import { reactive, defineProps, onMounted, watch, ref, PropType } from 'vue';
 import { BASEURL, httpPost, httpPatch } from '@/utils/http_config.js';
 import { AppointmentModel } from '@/models/appointments/appointment_model';
 import { mapFormToPayload } from '@/utils/map_helper';
-import PhoneTextField from '@/components/PhoneTextField.vue';
+import PhoneTextField from '@/components/common/PhoneTextField.vue';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();

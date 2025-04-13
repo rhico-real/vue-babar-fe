@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
 import PatientDialog from '@/components/dashboard/dialogs/patients/PatientDialog.vue';
-import CustomButton from '@/components/Button.vue';
+import CustomButton from '@/components/common/Button.vue';
 import { httpGet, httpPost, httpDelete, httpPatients, httpPostFindPatient } from '@/utils/http_config.js';
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';

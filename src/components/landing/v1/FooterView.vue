@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router';
-import logo from '@/assets/img/logo.png'
+import logo from '@/assets/img/logo-1.png'
 import { reactive } from 'vue';
 
 const state = reactive({

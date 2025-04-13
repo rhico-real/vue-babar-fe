@@ -3,7 +3,7 @@ import { reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { useRoute, RouterLink } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import Button from '@/components/Button.vue';
+import Button from '@/components/common/Button.vue';
 import { BASEURL, httpPost } from '@/utils/http_config.js';
 
 const httpFindAppointment = `${BASEURL}/api/find_appointment_by_reference/`;

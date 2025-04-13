@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import Button from '@/components/Button.vue';
+import Button from '@/components/common/Button.vue';
 import { useToast } from "vue-toastification";
 import axios from 'axios';
 import router from '@/router';

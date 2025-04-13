@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
 import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
-import CustomButton from '@/components/Button.vue';
+import CustomButton from '@/components/common/Button.vue';
 import TableView from '@/components/dashboard/TableView.vue';
 
 import { httpGet, httpPost, httpDelete, httpGetAppointments, httpPostFindAppointment, httpDeleteAppointment } from '@/utils/http_config.js';
