@@ -11,17 +11,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { reactive, defineProps, onMounted, watch, ref, PropType } from 'vue';
-import { BASEURL, httpPost, httpPatch } from '@/utils/http_config.js';
+import { reactive, defineProps, ref, PropType } from 'vue';
+import { httpPost, httpPatch, httpUploadPhotoPatient, httpPatients } from '@/utils/http_config.js';
 import { AppointmentModel } from '@/models/appointments/appointment_model';
 import { mapFormToPayload } from '@/utils/map_helper';
 import PhoneTextField from '@/components/common/PhoneTextField.vue';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
-
-const httpPatients = `${BASEURL}/api/patients/`;
-const httpUploadPhotoPatient = `${BASEURL}/api/upload_patient_photo/`;
 
 const props = defineProps({
   title: {

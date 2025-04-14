@@ -13,6 +13,7 @@ import CalendarView from '@/views/dashboard/CalendarView.vue';
 import ProfilePageView from '@/views/profile/ProfilePageView.vue';
 
 import { useToast } from "vue-toastification";
+import { logout } from '@/utils/http_config.js';
 
 const toast = useToast();
 
@@ -129,6 +130,8 @@ router.beforeEach((to, from) => {
 
     if(to.meta.requiresAuth && !token){
         toast.error('Oops. Unauthenticated.');
+
+        logout();
 
         return {
             path: '/',

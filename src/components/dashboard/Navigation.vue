@@ -115,10 +115,10 @@ const userPhotoUrl = computed(() => userProfileStore.userPhoto || profile);
       <!-- Right side Content -->
       <div class="flex flex-1 flex-col">
         <!-- topbar navigation -->
-        <div class="flex w-full py-6 px-10">
+        <div class="flex w-full py-3 px-10">
             <div class="flex flex-1 items-center justify-end">
                 <img class="h-6 w-6 mr-6" :src="notificationIcon" alt="">
-                <RouterLink class="flex cursor-pointer" to="/profile">
+                <RouterLink class="flex cursor-pointer hover:bg-gray-200 rounded-lg px-6 py-3" to="/profile">
                   <img class="h-10 w-10 rounded-full object-cover" :src="userPhotoUrl" alt="profile">
                   <div class="flex flex-col ml-4">
                       <p class="font-semibold">{{ userFullName || 'Jane Doe'}}</p>
