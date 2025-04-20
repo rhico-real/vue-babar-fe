@@ -36,7 +36,7 @@ const login = async () => {
 
     console.log(payload);
 
-    await axios.post('http://127.0.0.1:8000/api/auth/login/', payload)
+    await axios.post('https://radsoftph.com/api/auth/login/', payload)
         .then(function (response) {
             console.log(response);
 
