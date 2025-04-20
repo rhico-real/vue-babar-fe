@@ -8,6 +8,7 @@ import { BASEURL, httpGet, httpPost } from '@/utils/http_config.js';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
 import { useToast } from 'vue-toastification';
+import { useUserProfileStore } from '@/stores/userProfile';
 
 const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
 const httpGetPatients = `${BASEURL}/api/patients/`;
@@ -15,15 +16,17 @@ const httpGetPatients = `${BASEURL}/api/patients/`;
 const httpPostFindAppointment = `${BASEURL}/api/filter_appointment/`;
 const httpPostFindPatient = `${BASEURL}/api/filter_patient/`;
 
-
 const toast = useToast();
 
 const appointmentsList = ref([]);
 const patientsList = ref([]);
 
+const userProfileStore = useUserProfileStore();
+
 onMounted( async () => {
     await getAppointments();
     await getPatients();
+    await userProfileStore.fetchProfile();
 });
 
 
