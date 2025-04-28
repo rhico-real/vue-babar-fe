@@ -11,6 +11,22 @@ export class AppointmentModel {
     reason?: string;
 }
 
+export const mapToOneAppointmentModel = (item: any): AppointmentModel => {
+    return {
+        id: item.id,
+        full_name: item.full_name,
+        email: item.email,
+        phone_number: item.phone_number,
+        date: item.date,
+        queue_number: item.queue_number,
+        time_estimate: item.time_estimate,
+        reference_code: item.reference_code,
+        status: item.status,
+        reason: item.reason
+    };
+};
+
+
 // Function to map API response to the model
 export const mapToAppointmentModel = (data: any[]): AppointmentModel[] => {
     return data.map(item => ({
@@ -35,6 +51,7 @@ export const mapToTableView = (data: any[]): Partial<AppointmentModel>[] => {
         phone_number: item.phone_number,
         date: item.date,
         queue_number: item.queue_number,
+        reference_code: item.reference_code,
         status: item.status,
         reason: item.reason
     }));

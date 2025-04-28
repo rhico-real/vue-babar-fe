@@ -36,7 +36,7 @@ const register = async () => {
 
     console.log(payload);
 
-    await axios.post('https://radsoftph.com/api/auth/register/', payload)
+    await axios.post('http://127.0.0.1:8000/api/auth/register/', payload)
         .then(function (response) {
             loadingButton.value = false;
             toast.success('Register Success.');

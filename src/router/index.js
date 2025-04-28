@@ -11,6 +11,10 @@ import RegisterView from '@/views/auth/RegisterView.vue';
 import ManageAppointmentsView from '@/views/dashboard/ManageAppointmentsView.vue';
 import CalendarView from '@/views/dashboard/CalendarView.vue';
 import ProfilePageView from '@/views/profile/ProfilePageView.vue';
+import PaymentOptionsView from '@/views/appointments/payment_option_customer/PaymentOptionsView.vue';
+import PaymentProvidersView from '@/views/appointments/payment_option_customer/PaymentProvidersView.vue';
+import SendProofOfPaymentView from '@/views/appointments/payment_option_customer/SendProofOfPaymentView.vue';
+import SuccessOrErrorPaymentView from '@/views/appointments/payment_option_customer/SuccessOrErrorPaymentView.vue';
 
 import { useToast } from "vue-toastification";
 import { logout } from '@/utils/http_config.js';
@@ -53,6 +57,26 @@ const appointmentRoutes = [
                 path: ':id',
                 name: 'appointment',
                 component: AppointmentView
+            },
+            {
+                path: 'pay',
+                name: 'payappointment',
+                component: PaymentOptionsView
+            },
+            {
+                path: 'pay/:id',
+                name: 'paymentproviders',
+                component: PaymentProvidersView
+            },
+            {
+                path: 'pay/:id/proof-of-payment',
+                name: 'proofofpayment',
+                component: SendProofOfPaymentView
+            },
+            {
+                path: 'pay/:id/proof-of-payment/:result',
+                name: 'successorerrorpayment',
+                component: SuccessOrErrorPaymentView
             },
         ]
     }

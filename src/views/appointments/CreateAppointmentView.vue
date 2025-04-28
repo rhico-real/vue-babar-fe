@@ -88,6 +88,15 @@ const submit = async () => {
                             Check your booking here.
                     </RouterLink>
                 </p>
+
+                <!-- Already booked appointment? --> 
+               <p class="mt-1">Need to pay for appointment? 
+                    <RouterLink 
+                        to="/appointment/pay"
+                        class="hover:underline text-blue-500">
+                            Pay here.
+                    </RouterLink>
+                </p>
         </div>
     </section>
 </template>

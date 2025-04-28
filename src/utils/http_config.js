@@ -13,7 +13,8 @@ export const headers = () => ({
 });
 
 
-export const BASEURL = "https://radsoftph.com";
+// export const BASEURL = "https://radsoftph.com";
+export const BASEURL = "http://127.0.0.1:8000";
 
 export const httpGet = async (endpoint) => {
     try{
@@ -23,8 +24,16 @@ export const httpGet = async (endpoint) => {
         if(error.status == 401){
             logout();
         } else {
-            console.error(error);
-            return error.data;
+            console.error('Error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            });
+            return {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            };
         }
     }
 }
@@ -38,8 +47,16 @@ export const httpPost = async (endpoint, payload, hasHeaders = true) => {
         if (error.status === 401) {
             logout();
         } else {
-            console.error(error);
-            return error;
+            console.error('Error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            });
+            return {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            };
         }
     }
 };
@@ -52,8 +69,16 @@ export const httpPatch = async (endpoint, payload) => {
         if(error.status == 401){
             logout();
         } else {
-            console.error(error);
-            return error;
+            console.error('Error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            });
+            return {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            };
         }
     }
 }
@@ -72,8 +97,16 @@ export const httpDelete = async (endpoint, payload) => {
         if(error.status == 401){
             logout();
         } else {
-            console.error(error);
-            return error.data;
+            console.error('Error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            });
+            return {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+            };
         }
     }
 }
@@ -104,9 +137,11 @@ export const logout = async () => {
                 toast.warning("Successfully logged out.");
                 console.log(value);
             } else {
-                logoutFunction(error);
-                toast.warning("Logged out.");
-                console.log(error);
+                if(getAccessToken()){
+                    logoutFunction(error);
+                    toast.warning("Logged out.");
+                    console.log(error);
+                }
             }
         });
 }
@@ -118,6 +153,13 @@ export const httpAddAppointment = `${BASEURL}/api/add_appointment/`;
 export const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
 export const httpPostFindAppointment = `${BASEURL}/api/filter_appointment/`;
 export const httpDeleteAppointment = `${BASEURL}/api/delete_appointment/`;
+export const httpFindAppointmentByReference = `${BASEURL}/api/find_appointment_by_reference/`;
+
+// Payment Appointments
+export const httpPayViaReferenceNumber = `${BASEURL}/api/pay_via_reference_number/`;
+export const httpPayViaScreenshot= `${BASEURL}/api/pay_via_screenshot/`;
+export const httpGetAllPaymentAppointments = `${BASEURL}/api/get_all_payment_appointments/`;
+
 
 // Patients
 export const httpPatients = `${BASEURL}/api/patients/`;

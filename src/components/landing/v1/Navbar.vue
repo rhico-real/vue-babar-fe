@@ -28,7 +28,7 @@ onMounted(() => {
             </div>
             <div class="flex flex-1 my-3 md:mx-4 xl:mx-36  space-x-1 text-white justify-end text-sm">
                 <RouterLink to="/" :class="[isActiveLink('/') ? 'bg-blue-200' : '', 'hover:bg-gray-200', 'py-2', 'px-2', 'rounded-md', 'text-black']">Home</RouterLink>
-                <RouterLink to="/appointment/create" :class="[isActiveLink('/appointment/create') ? 'bg-blue-200' : '', 'hover:bg-gray-200', 'py-2', 'px-2', 'rounded-md', 'text-black']">Create Appointment</RouterLink>
+                <RouterLink to="/appointment/create" :class="[isActiveLink('/appointment/create') || isActiveLink('/appointment/pay') ? 'bg-blue-200' : '', 'hover:bg-gray-200', 'py-2', 'px-2', 'rounded-md', 'text-black']">Create Appointment</RouterLink>
                 <RouterLink v-if="isAuthenticated" to="/dashboard" :class="[isActiveLink('/dashboard') ? 'bg-blue-200' : '', 'hover:bg-gray-200', 'py-2', 'px-2', 'rounded-md', 'text-black']">Dashboard</RouterLink>
                 <RouterLink v-if="!isAuthenticated" to="/auth/login" :class="[isActiveLink('/auth/login') ? 'bg-blue-200' : '', 'hover:bg-gray-200', 'py-2', 'px-2', 'rounded-md', 'text-black']">Login</RouterLink>
             </div>

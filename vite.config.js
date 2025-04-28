@@ -16,6 +16,7 @@ export default defineConfig({
     proxy: {
       '/foo':'http://127.0.0.1:5000'
     },
+    historyApiFallback: true
   },
   resolve: {
     alias: {
