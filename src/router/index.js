@@ -15,6 +15,7 @@ import PaymentOptionsView from '@/views/appointments/payment_option_customer/Pay
 import PaymentProvidersView from '@/views/appointments/payment_option_customer/PaymentProvidersView.vue';
 import SendProofOfPaymentView from '@/views/appointments/payment_option_customer/SendProofOfPaymentView.vue';
 import SuccessOrErrorPaymentView from '@/views/appointments/payment_option_customer/SuccessOrErrorPaymentView.vue';
+import ManagePaymentsView from '@/views/dashboard/ManagePaymentsView.vue';
 
 import { useToast } from "vue-toastification";
 import { logout } from '@/utils/http_config.js';
@@ -108,6 +109,12 @@ const dashboardRoutes = [
                 path: 'calendar',
                 name: 'calendar',
                 component: CalendarView,
+                meta: { requiresAuth: true }
+            },
+            {
+                path: 'payments',
+                name: 'payments',
+                component: ManagePaymentsView,
                 meta: { requiresAuth: true }
             },
             {

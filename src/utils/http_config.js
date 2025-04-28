@@ -159,6 +159,7 @@ export const httpFindAppointmentByReference = `${BASEURL}/api/find_appointment_b
 export const httpPayViaReferenceNumber = `${BASEURL}/api/pay_via_reference_number/`;
 export const httpPayViaScreenshot= `${BASEURL}/api/pay_via_screenshot/`;
 export const httpGetAllPaymentAppointments = `${BASEURL}/api/get_all_payment_appointments/`;
+export const httpPostFindPayment = `${BASEURL}/api/filter_payment_appointment/`;
 
 
 // Patients

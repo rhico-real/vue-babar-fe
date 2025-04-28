@@ -34,6 +34,11 @@ const sidebarNavs = [
         title: 'Calendar',
         to: '/dashboard/calendar',
         icon: 'pi-calendar'
+    },
+    {
+        title: 'Payments',
+        to: '/dashboard/payments',
+        icon: 'pi-money-bill'
     }
 ];
 

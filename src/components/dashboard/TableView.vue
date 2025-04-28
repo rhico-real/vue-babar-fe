@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, Ref, ref, watch, computed } from 'vue';
+import { defineProps, Ref, ref, watch, computed, PropType } from 'vue';
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-vue-next'
 import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
@@ -37,12 +37,20 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    hasPaymentStatusFilter: {
+        type: Boolean,
+        default: false
+    },
     filterByStatusFunction: Function,
     filterByDateFunction: Function,
     hasDateFilter: {
         type: Boolean,
         default: false
     },
+    dropdownOption: {
+        type: Object as PropType<DropdownOption>,
+        default: DropdownOption.STATUS
+    }
 })
 
 const searchbar = ref('');
@@ -161,6 +169,12 @@ const clearStatusFilter = () => {
             <Button v-if="statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
                 Clear Status
             </Button>
+
+            <DropdownMenu v-model="statusFilter" class="mr-3" v-if="props.hasPaymentStatusFilter" title="Choose Status" :option="DropdownOption.PAYMENT_STATUS"/>
+            <Button v-if="statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
+                Clear Status
+            </Button>
+
             <DropdownMenu v-if="props.hasMonthFilter" :option="DropdownOption.MONTH"/>
             
             <Popover v-model:open="isPopoverOpen" v-if="props.hasDateFilter">
@@ -193,7 +207,7 @@ const clearStatusFilter = () => {
                     <tr class="bg-white hover:bg-gray-50" v-for="(item, itemIndex) in filteredItems" :key="itemIndex">
                         <td class="px-6 py-4 text-black items-start" v-for="(key, index) in tableHeaders" :key="index">
                             <span v-if="key.toLowerCase() === 'status'">
-                                <DropdownMenu class="w-full" :title="item[key]" :option="DropdownOption.STATUS" :isDisabled="true"/>    
+                                <DropdownMenu class="w-full" :title="item[key]" :option="dropdownOption" :isDisabled="true"/>    
                             </span>
                             <span v-else-if="key.toLowerCase() === 'photo' && item[key]">
                                 <img class="bg-gray-300 h-10 w-10" :src="item[key]" alt="">
