@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, Ref, ref, watch, computed, PropType } from 'vue';
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-vue-next'
+import { Search, X } from 'lucide-vue-next'
 import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
 import { DropdownOption } from '../dropdown/dropdownoptions';
 import { Calendar } from '@/components/ui/calendar'
@@ -55,6 +55,23 @@ const props = defineProps({
 
 const searchbar = ref('');
 const filteredItems = ref([]);
+
+// Modal state
+const isImageModalOpen = ref(false);
+const selectedImage = ref('');
+
+// Function to open the image modal
+const openImageModal = (imageUrl) => {
+    selectedImage.value = imageUrl;
+    isImageModalOpen.value = true;
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+};
+
+// Function to close the image modal
+const closeImageModal = () => {
+    isImageModalOpen.value = false;
+    document.body.style.overflow = ''; // Restore scrolling
+};
 
 watch(
     () => props.items,
@@ -210,7 +227,7 @@ const clearStatusFilter = () => {
                                 <DropdownMenu class="w-full" :title="item[key]" :option="dropdownOption" :isDisabled="true"/>    
                             </span>
                             <span v-else-if="key.toLowerCase() === 'photo' && item[key]">
-                                <img class="bg-gray-300 h-10 w-10" :src="item[key]" alt="">
+                                <img class="bg-gray-300 h-10 w-10 cursor-pointer" :src="item[key]" alt="" @click="openImageModal(item[key])">
                             </span>
                             <span v-else>{{ item[key] ?? "N/A" }}</span>
                         </td>
@@ -219,5 +236,29 @@ const clearStatusFilter = () => {
                 </tbody>
             </table>
         </div>
+
+        <!-- Image Modal -->
+        <div v-if="isImageModalOpen" class="fixed inset-0 z-50 flex items-center justify-center image-modal-backdrop" @click="closeImageModal">
+            <button @click.stop="closeImageModal" class="absolute top-6 right-6 p-2 text-white bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition-all z-60">
+                <X class="h-6 w-6" />
+            </button>
+            <div class="relative max-w-4xl max-h-screen">
+                <img :src="selectedImage" alt="Enlarged image" class="max-w-full max-h-[85vh] object-contain" @click.stop>
+            </div>
+        </div>
     </div>
 </template>
+
+<style scoped>
+/* Add ambient effect to the modal backdrop */
+.image-modal-backdrop {
+  animation: fadeIn 0.1s ease-in-out;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+</style>
