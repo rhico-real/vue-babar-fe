@@ -29,7 +29,10 @@ const form = reactive({
     title: '',
     details: '',
     date: '',
-    status: ''
+    status: '',
+    queue: 'N/A',
+    reference_code: '',
+    time_estimate: 'N/A'
 });
 
 const getStatus = (val) => {
@@ -53,11 +56,17 @@ const initFormWithExistingEvent = () => {
         form.details = props.existingEvent.details || '';
         form.date = props.existingEvent.date || '';
         form.status = getStatus(props.existingEvent.status) || '';
+        form.queue = props.existingEvent.queue || 'N/A';
+        form.reference_code = props.existingEvent.reference_code || '';
+        form.time_estimate = props.existingEvent.time_estimate || 'N/A';
     } else {
         form.title = '';
         form.details = '';
         form.date = '';
         form.status = '';
+        form.queue = 'N/A';
+        form.reference_code = '';
+        form.time_estimate = 'N/A';
     }
 };
 
@@ -139,6 +148,24 @@ const formattedEventDate = computed(() => {
                         Status
                     </Label>
                     <Input v-model="form.status" id="details" class="col-span-3 disabled:opacity-100 disabled:cursor-not-allowed" placeholder="Event details" disabled />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="details" class="text-right">
+                        Queue Number
+                    </Label>
+                    <Input v-model="form.queue" id="details" class="col-span-3 disabled:opacity-100 disabled:cursor-not-allowed" placeholder="Event details" disabled />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="details" class="text-right">
+                        Reference Code
+                    </Label>
+                    <Input v-model="form.reference_code" id="details" class="col-span-3 disabled:opacity-100 disabled:cursor-not-allowed" placeholder="Event details" disabled />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="details" class="text-right">
+                        Time Estimate
+                    </Label>
+                    <Input v-model="form.time_estimate" id="details" class="col-span-3 disabled:opacity-100 disabled:cursor-not-allowed" placeholder="Event details" disabled />
                 </div>
             </div>
             <!-- end contents -->

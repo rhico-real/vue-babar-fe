@@ -15,7 +15,10 @@ interface CalendarEvent {
   title: string;
   details: string;
   date: Date;
-  status: string
+  status: string;
+  queue: number;
+  reference_code: string;
+  time_estimate: string;
 }
 
 const events = ref<CalendarEvent[]>([
@@ -160,7 +163,10 @@ const getAppointmentsForMonth = async (date?: Date) => {
       title: appointment.full_name,
       details: appointment.reason,
       date: new Date(appointment.date),
-      status: appointment.status
+      status: appointment.status,
+      queue: appointment.queue_number,
+      reference_code: appointment.reference_code,
+      time_estimate: appointment.time_estimate
     }
 
     events.value.push(eventMap);
