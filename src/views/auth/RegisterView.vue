@@ -37,7 +37,7 @@ const register = async () => {
 
         const response = await httpPost(httpRegister, payload, false);
 
-        if(data.status === 200 || data.status === 201){
+        if(response.status === 200 || data.status === 201){
             loadingButton.value = false;
             toast.success('Register Success.');
             console.log(response);

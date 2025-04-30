@@ -39,7 +39,7 @@ const login = async () => {
 
     const response = await httpPost(httpLogin, payload, false);
     
-    if(data.status === 200){
+    if(response.status === 200){
         console.log(response);
 
         localStorage.setItem('access', response.data['user']['tokens']['access']);
