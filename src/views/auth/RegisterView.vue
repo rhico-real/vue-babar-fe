@@ -35,7 +35,7 @@ const register = async () => {
             'password': state.password
         };
 
-        const data = await httpPost(httpRegister, payload, false);
+        const response = await httpPost(httpRegister, payload, false);
 
         if(data.status === 200 || data.status === 201){
             loadingButton.value = false;

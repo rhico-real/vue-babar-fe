@@ -37,7 +37,7 @@ const login = async () => {
 
     console.log(payload);
 
-    const data = await httpPost(httpLogin, payload, false);
+    const response = await httpPost(httpLogin, payload, false);
     
     if(data.status === 200){
         console.log(response);
