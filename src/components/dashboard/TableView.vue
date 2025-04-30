@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, Ref, ref, watch, computed, PropType } from 'vue';
 import { Input } from '@/components/ui/input'
-import { Search, X } from 'lucide-vue-next'
+import { Search, X, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-vue-next'
 import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
 import { DropdownOption } from '../dropdown/dropdownoptions';
 import { Calendar } from '@/components/ui/calendar'
@@ -56,6 +56,83 @@ const props = defineProps({
 const searchbar = ref('');
 const filteredItems = ref([]);
 
+// Sorting state
+const sortColumn = ref('');
+const sortDirection = ref('asc'); // 'asc' or 'desc'
+
+// Function to sort table data
+const sortTable = (column) => {
+    // Don't sort photo or status columns
+    if (column.toLowerCase() === 'photo' || column.toLowerCase() === 'status') {
+        return;
+    }
+
+    // If clicking the same column, toggle direction
+    if (sortColumn.value === column) {
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        // New column, set to ascending by default
+        sortColumn.value = column;
+        sortDirection.value = 'asc';
+    }
+
+    // Sort the filtered items
+    filteredItems.value = [...filteredItems.value].sort((a, b) => {
+        const valueA = a[column];
+        const valueB = b[column];
+
+        // Check if we're dealing with dates
+        if (isDate(valueA) && isDate(valueB)) {
+            const dateA = new Date(valueA);
+            const dateB = new Date(valueB);
+            return sortDirection.value === 'asc' 
+                ? dateA.getTime() - dateB.getTime()
+                : dateB.getTime() - dateA.getTime();
+        }
+
+        // Handle null/undefined values - push them to the end regardless of sort order
+        if (valueA === null || valueA === undefined) return 1;
+        if (valueB === null || valueB === undefined) return -1;
+
+        // Handle numeric values
+        if (typeof valueA === 'number' && typeof valueB === 'number') {
+            return sortDirection.value === 'asc' ? valueA - valueB : valueB - valueA;
+        }
+
+        // Default string comparison
+        const strA = String(valueA).toLowerCase();
+        const strB = String(valueB).toLowerCase();
+        
+        if (sortDirection.value === 'asc') {
+            return strA.localeCompare(strB);
+        } else {
+            return strB.localeCompare(strA);
+        }
+    });
+};
+
+// Function to check if a value is a date
+const isDate = (value) => {
+    if (!value) return false;
+    
+    // Check if it matches a date format (YYYY-MM-DD or similar)
+    if (typeof value === 'string') {
+        // Common date patterns
+        const datePatterns = [
+            /^\d{4}-\d{2}-\d{2}/, // YYYY-MM-DD
+            /^\d{2}\/\d{2}\/\d{4}/, // MM/DD/YYYY
+            /^\d{2}-\d{2}-\d{4}/, // DD-MM-YYYY
+        ];
+        
+        if (datePatterns.some(pattern => pattern.test(value))) {
+            const timestamp = Date.parse(value);
+            return !isNaN(timestamp);
+        }
+    }
+    
+    return false;
+};
+
 // Modal state
 const isImageModalOpen = ref(false);
 const selectedImage = ref('');
@@ -77,6 +154,9 @@ watch(
     () => props.items,
     (newItems) => {
         filteredItems.value = newItems;
+        // Reset sorting when new items are loaded
+        sortColumn.value = '';
+        sortDirection.value = 'asc';
     },
     {immediate: true}
 )
@@ -214,8 +294,23 @@ const clearStatusFilter = () => {
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-200 text-xs text-gray-700 uppercase">
                     <tr>
-                        <th scope="col" class="px-6 py-3" v-for="(key,i) in tableHeaders" :key="i">
-                            {{ formatHeader(key) }}
+                        <th scope="col" class="px-6 py-3" 
+                            v-for="(key, i) in tableHeaders" 
+                            :key="i"
+                            :class="[
+                                key.toLowerCase() !== 'photo' && key.toLowerCase() !== 'status' ? 'hover:bg-blue-100' : '',
+                                sortColumn === key ? 'bg-blue-200' : ''
+                            ]"
+                            @click="key.toLowerCase() !== 'photo' && key.toLowerCase() !== 'status' ? sortTable(key) : null"
+                        >
+                            <div class="flex items-center select-none" :class="{'cursor-pointer': key.toLowerCase() !== 'photo' && key.toLowerCase() !== 'status'}">
+                                {{ formatHeader(key) }}
+                                <span v-if="key.toLowerCase() !== 'photo' && key.toLowerCase() !== 'status'" class="ml-1">
+                                    <ArrowUpDown v-if="sortColumn !== key" class="h-4 w-4 text-gray-400" />
+                                    <ArrowUp v-else-if="sortDirection === 'asc'" class="h-4 w-4" />
+                                    <ArrowDown v-else class="h-4 w-4" />
+                                </span>
+                            </div>
                         </th>
                         <slot name="customHeader"></slot>
                     </tr>
@@ -260,5 +355,14 @@ const clearStatusFilter = () => {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Sortable column styles */
+th div {
+  user-select: none;
+}
+
+th div.cursor-pointer:hover {
+  cursor: pointer;
 }
 </style>
