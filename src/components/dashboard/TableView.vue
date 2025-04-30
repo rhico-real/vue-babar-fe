@@ -48,7 +48,7 @@ const props = defineProps({
         default: false
     },
     dropdownOption: {
-        type: Object as PropType<DropdownOption>,
+        type: String,
         default: DropdownOption.STATUS
     }
 })
@@ -263,12 +263,13 @@ const clearStatusFilter = () => {
             
             <!-- dropdown button -->
             <DropdownMenu v-model="statusFilter" class="mr-3" v-if="props.hasStatusFilter" title="Choose Status" :option="DropdownOption.STATUS"/>
-            <Button v-if="statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
+            <Button v-if="props.hasStatusFilter && statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
                 Clear Status
             </Button>
 
+            <!-- dropdown payment status button -->
             <DropdownMenu v-model="statusFilter" class="mr-3" v-if="props.hasPaymentStatusFilter" title="Choose Status" :option="DropdownOption.PAYMENT_STATUS"/>
-            <Button v-if="statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
+            <Button v-if="props.hasPaymentStatusFilter && statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
                 Clear Status
             </Button>
 

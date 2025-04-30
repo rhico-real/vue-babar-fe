@@ -33,7 +33,20 @@ const searchPayment = async (value) => {
     if(data.status === 200){
         return data.data;
     } else {
-        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
+    }
+}
+
+const filterByStatusPaymentAppointment = async (value) => {
+    const payload = {
+        "status": value
+    }
+
+    const data = await httpPost(httpPostFindPayment, payload);
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
     }
 }
 
@@ -54,7 +67,8 @@ const searchPayment = async (value) => {
             :parser="paymentMapToTableView" 
             :hasDateFilter="true" 
             :hasPaymentStatusFilter="true"
-            :dropdown-option="DropdownOption.PAYMENT_STATUS"
+            :dropdownOption="DropdownOption.PAYMENT_STATUS"
+            :filterByStatusFunction="filterByStatusPaymentAppointment"
             >
                 <template #customHeader>
                     <th scope="col" class="px-6 py-3">
@@ -64,7 +78,7 @@ const searchPayment = async (value) => {
                 <template #customrow="{ item }">
                     <td class="px-6 py-4">
                         <PaymentAppointmentDialog 
-                            title="Edit Patient"
+                            title="Edit Payment"
                             :payment="item"
                             :isEdit="true",
                             @submitted="getPayments"

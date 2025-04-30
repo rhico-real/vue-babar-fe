@@ -33,7 +33,7 @@ const searchAppointments = async (value) => {
     if(data.status === 200){
         return data.data;
     } else {
-        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
     }
 }
 
@@ -46,7 +46,7 @@ const filterByDateAppointments = async (value) => {
     if(data.status === 200){
         return data.data;
     } else {
-        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
     }
 }
 
@@ -59,7 +59,7 @@ const filterByStatusAppointments = async (value) => {
     if(data.status === 200){
         return data.data;
     } else {
-        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
     }
 }
 

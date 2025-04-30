@@ -32,7 +32,7 @@ const searchPatient = async (value) => {
     if(data.status === 200){
         return data.data;
     } else {
-        toast.error(data['response']['data']['message'] ?? "Error. Please contact admin.");
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
     }
 }
 
@@ -46,7 +46,7 @@ const deletePatient = async (value) => {
         toast.success(data.data['message'] ?? "Patient successfully deleted.");
         await getPatients();
     } else {
-        toast.error(data['response']['data']['message'] ?? "Error deleting Patient.");
+        toast.error(data['data']['message'] ?? "Error deleting Patient.");
     }
 }
 
