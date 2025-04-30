@@ -146,6 +146,11 @@ const isToday = (date: Date) => {
          date.getFullYear() === today.getFullYear();
 };
 
+// Check if day has more than 5 events (for scrollable container)
+const hasMoreThanFiveEvents = (events) => {
+  return events && events.length > 5;
+};
+
 const getAppointmentsForMonth = async (date?: Date) => {
   const today = new Date();
   const month = date ? date.getMonth() : today.getMonth();
@@ -236,18 +241,6 @@ onMounted(() => {
               !day.isCurrentMonth ? 'pointer-events-none' : ''
             ]"
           >
-            <!-- Make the entire cell clickable using the dialog -->
-            <!-- <AddEventCalendarDialog 
-              v-if="day.isCurrentMonth && day.date"
-              :date="day.date ? formatDate(day.date) : ''"
-              @add-event="addEvent"
-            >
-              <template #triggerbutton>
-                <button class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                </button>
-              </template>
-            </AddEventCalendarDialog> -->
-
             <!-- Day number -->
             <div 
               :class="[
@@ -258,8 +251,11 @@ onMounted(() => {
               {{ day.day }}
             </div>
             
-            <!-- Events -->
-            <div class="mt-8 mx-1">
+            <!-- Events container - scrollable if more than 5 events -->
+            <div 
+              class="mt-8 mx-1" 
+              :class="{ 'events-container': hasMoreThanFiveEvents(day.events) }"
+            >
               <div v-for="event in day.events" :key="event.id">
                 <AddEventCalendarDialog 
                   :date="day.date ? formatDate(day.date) : ''"
@@ -281,6 +277,12 @@ onMounted(() => {
                     </div>
                   </template>
                 </AddEventCalendarDialog>
+              </div>
+              <!-- Indicator for scrollable content -->
+              <div v-if="hasMoreThanFiveEvents(day.events)" class="scroll-indicator">
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
               </div>
             </div>
           </div>
@@ -337,5 +339,50 @@ onMounted(() => {
 .bg-blue-500:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollable events container for days with more than 5 events */
+.events-container {
+  max-height: 140px; /* Adjust this height based on your design */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  padding-right: 5px;
+  position: relative;
+}
+
+/* Custom scrollbar styling */
+.events-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.events-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.events-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+/* Scroll indicator styling */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.scroll-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>
