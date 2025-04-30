@@ -17,6 +17,7 @@ import { AppointmentModel } from '@/models/appointments/appointment_model';
 import { mapFormToPayload } from '@/utils/map_helper';
 import PhoneTextField from '@/components/common/PhoneTextField.vue';
 import { useToast } from 'vue-toastification';
+import { PatientModel } from '@/models/patients/patient_model';
 
 const toast = useToast();
 
@@ -26,7 +27,7 @@ const props = defineProps({
     default: "Add Patient"
   },
   patient: {
-    type: Object as PropType<AppointmentModel>
+    type: Object as PropType<PatientModel>
   },
   isEdit: {
     type: Boolean,

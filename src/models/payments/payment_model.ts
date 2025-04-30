@@ -1,4 +1,4 @@
-export interface PatientModel {
+export interface PaymentModel {
     reference_code: string;
     payment_reference_number: string;
     status: string;
@@ -8,7 +8,7 @@ export interface PatientModel {
 }
 
 // Function to map API response to the model
-export const mapToTableView = (data: any[]): Partial<PatientModel>[] => {
+export const mapToTableView = (data: any[]): Partial<PaymentModel>[] => {
     return data.map(item => ({
         reference_code: item.reference_code,
         payment_reference_number: item.payment_reference_number,

@@ -160,6 +160,7 @@ export const httpPayViaReferenceNumber = `${BASEURL}/api/pay_via_reference_numbe
 export const httpPayViaScreenshot= `${BASEURL}/api/pay_via_screenshot/`;
 export const httpGetAllPaymentAppointments = `${BASEURL}/api/get_all_payment_appointments/`;
 export const httpPostFindPayment = `${BASEURL}/api/filter_payment_appointment/`;
+export const httpPatchUpdatePayment = `${BASEURL}/api/update_payment_appointment/`;
 
 
 // Patients

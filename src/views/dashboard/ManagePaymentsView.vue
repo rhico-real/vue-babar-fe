@@ -65,7 +65,7 @@ const searchPayment = async (value) => {
                     <td class="px-6 py-4">
                         <PaymentAppointmentDialog 
                             title="Edit Patient"
-                            :patient="item"
+                            :payment="item"
                             :isEdit="true",
                             @submitted="getPayments"
                         >

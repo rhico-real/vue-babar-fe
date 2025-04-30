@@ -3,8 +3,8 @@ import { Loader2 } from 'lucide-vue-next';
 import bg2 from '@/assets/landing/bg-2.png';
 import { Button } from '@/components/ui/button'
 import { useRoute } from 'vue-router'
-import { onMounted, ref } from 'vue';
-import { httpPost, httpFindAppointmentByReference, httpPayViaReferenceNumber } from '@/utils/http_config.js';
+import { onMounted, ref, reactive } from 'vue';
+import { httpPost, httpFindAppointmentByReference, httpPayViaReferenceNumber, httpPayViaScreenshot } from '@/utils/http_config.js';
 import { mapToOneAppointmentModel } from '@/models/appointments/appointment_model';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,6 +24,8 @@ const appointment = ref(null);
 const paymentReferenceNumber = ref('');
 const loadingButton = ref(false);
 const defaultValue = ref('');
+
+const photo = reactive({ file: null });
 
 const findAppointment = async () => {
     const payload = {
@@ -54,8 +56,36 @@ const payviareferencenumber = async () => {
     } else{
         toast.error('Error paying appointment. Please contact administrator.')
     }
-    
 }
+
+const uploadPhoto = async () => {
+    loadingButton.value = true;
+
+    const formData = new FormData();
+    formData.append("reference_code", id);
+    formData.append("photo", photo.file);
+
+    try {
+        const response = await httpPost(httpPayViaScreenshot, formData);
+        
+        loadingButton.value = false;
+
+        if(response.status == 201){
+            router.push('proof-of-payment/success');
+        } else{
+            toast.error('Error paying appointment. Please contact administrator.')
+        }
+    } catch (error) {
+        toast.error(error.response?.data?.message || "Payment error.");
+    }
+};
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        photo.file = file;
+    }
+};
 
 </script>
 
@@ -121,12 +151,12 @@ const payviareferencenumber = async () => {
                                 <Label for="refcode" class="text-right text-base md:text-xl font-bold">
                                     Upload your Gcash/Maya/QrPH receipt:
                                 </Label>
-                                <Input v-model="referenceCode" id="refcode" class="col-span-3 mt-3 text-sm h-10" type="file"/>
+                                <Input v-model="referenceCode" id="refcode" class="col-span-3 mt-3 text-sm h-10" type="file" @change="handleFileUpload"/>
                                 <Button v-if="loadingButton" disabled class="mt-5 w-full bg-main">
                                     <Loader2 class="w-4 h-4 mr-2 animate-spin" />
                                     Please wait
                                 </Button>
-                                <Button v-if="!loadingButton" @click="paynow" class="mt-5 w-full bg-white border-main border-2 text-main hover:text-white">Pay with Screenshot</Button>
+                                <Button v-if="!loadingButton" @click="uploadPhoto()" class="mt-5 w-full bg-white border-main border-2 text-main hover:text-white">Pay with Screenshot</Button>
                             </div>
                         </AccordionContent>
                     </AccordionItem>

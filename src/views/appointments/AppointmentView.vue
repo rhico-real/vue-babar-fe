@@ -80,7 +80,7 @@ const paynow = () => {
                 {
                     'text-red-600 bg-red-50': state.payment_status === 'UNPAID',
                     'text-yellow-600 bg-yellow-50': state.payment_status === 'PENDING',
-                    'text-green-600 bg-green-50': state.payment_status !== 'PAID'
+                    'text-green-600 bg-green-50': state.payment_status === 'PAID'
                 }
             ]"
             >

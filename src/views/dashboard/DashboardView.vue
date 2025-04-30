@@ -4,9 +4,10 @@ import totalpatientsicon from '@/assets/img/totalpatients.png';
 import totalappointmentsicon from '@/assets/img/totalappointments.png';
 import TableView from '@/components/dashboard/TableView.vue';
 import { onMounted, ref } from 'vue';
-import { BASEURL, httpGet, httpPost } from '@/utils/http_config.js';
+import { BASEURL, httpGet, httpPost, httpGetAllPaymentAppointments } from '@/utils/http_config.js';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
+import { mapToTableView as paymentMapToTableView } from '@/models/payments/payment_model';
 import { useToast } from 'vue-toastification';
 import { useUserProfileStore } from '@/stores/userProfile';
 
@@ -20,12 +21,14 @@ const toast = useToast();
 
 const appointmentsList = ref([]);
 const patientsList = ref([]);
+const totalPayments = ref(0);
 
 const userProfileStore = useUserProfileStore();
 
 onMounted( async () => {
     await getAppointments();
     await getPatients();
+    await getPayments();
     await userProfileStore.fetchProfile();
 });
 
@@ -38,6 +41,11 @@ const getAppointments = async () => {
 const getPatients = async () => {
     const data = await httpGet(httpGetPatients);
     patientsList.value = patientMapToTableView(data);
+}
+
+const getPayments= async () => {
+    const data = await httpGet(httpGetAllPaymentAppointments);
+    totalPayments.value = paymentMapToTableView(data).length;
 }
 
 const searchAppointments = async (value) => {
@@ -124,6 +132,22 @@ const filterByStatusAppointments = async (value) => {
                             <h1 class="font-bold text-2xl">{{ patientsList.length }}</h1>
                         </div>
                         <img :src="totalpatientsicon" alt="" class="h-14">
+                    </div>
+                    <!-- <div class="flex items-center mt-5">
+                        <i class="pi pi-chart-line text-green-500 mr-2"></i>
+                        <p class="font-semibold text-green-500 mr-4">8.5%</p>
+                        <p class="text-sm">Up from yesterday</p>
+                    </div> -->
+                </div>
+
+                 <!-- total payments card -->
+                 <div class="flex flex-col bg-white rounded-lg p-6 w-fit shadow-sm">
+                    <div class="flex">
+                        <div class="flex flex-col mr-12">
+                            <p>Total Payments</p>
+                            <h1 class="font-bold text-2xl">{{ totalPayments }}</h1>
+                        </div>
+                        <img :src="totalappointmentsicon" alt="" class="h-14">
                     </div>
                     <!-- <div class="flex items-center mt-5">
                         <i class="pi pi-chart-line text-green-500 mr-2"></i>
