@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label'
 import { useRouter } from 'vue-router';
 import womanlogin from '@/assets/img/landing/woman-login.jpg'
 import Navbar from '@/components/landing/v1/Navbar.vue';
+import { httpPost, httpLogin } from '@/utils/http_config.js';
 
 const toast = useToast();
 const router = useRouter();
@@ -36,23 +37,23 @@ const login = async () => {
 
     console.log(payload);
 
-    await axios.post('http://127.0.0.1:8000/api/auth/login/', payload)
-        .then(function (response) {
-            console.log(response);
+    const data = await httpPost(httpLogin, payload, false);
+    
+    if(data.status === 200){
+        console.log(response);
 
-            localStorage.setItem('access', response.data['user']['tokens']['access']);
-            localStorage.setItem('refresh', response.data['user']['tokens']['refresh']);
-            
-            loadingButton.value = false;
-            toast.success('Login Success.');
-            
-            router.push('/dashboard');
-        })
-        .catch(function (error) {
-            loadingButton.value = false;
-            toast.error('Error logging in.');
-            console.log(error);
-        });
+        localStorage.setItem('access', response.data['user']['tokens']['access']);
+        localStorage.setItem('refresh', response.data['user']['tokens']['refresh']);
+        
+        loadingButton.value = false;
+        toast.success('Login Success.');
+        
+        router.push('/dashboard');
+    } else {
+        loadingButton.value = false;
+        toast.error('Error logging in.');
+        console.log(error);
+    }
 };
 </script>
 

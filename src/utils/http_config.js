@@ -13,8 +13,8 @@ export const headers = () => ({
 });
 
 
-// export const BASEURL = "https://radsoftph.com";
-export const BASEURL = "http://127.0.0.1:8000";
+export const BASEURL = "https://radsoftph.com";
+// export const BASEURL = "http://127.0.0.1:8000";
 
 export const httpGet = async (endpoint) => {
     try{
@@ -147,6 +147,10 @@ export const logout = async () => {
 }
 
 /// Endpoints:
+//Auth
+export const httpLogin = `${BASEURL}/api/auth/login/`;
+export const httpRegister = `${BASEURL}/api/auth/register/`;
+
 // Appointments
 export const httpUpdateAppointment = `${BASEURL}/api/update_appointment/`;
 export const httpAddAppointment = `${BASEURL}/api/add_appointment/`;

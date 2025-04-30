@@ -10,6 +10,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from 'vue-toastification';
 import { Label } from '@/components/ui/label'
+import { httpPost, httpRegister } from '@/utils/http_config.js';
 
 const toast = useToast();
 
@@ -29,24 +30,22 @@ const register = async () => {
 
     if(state.password === state.confirm_password){
         const payload = {
-        'identifier': state.identifier,
-        'full_name': state.full_name,
-        'password': state.password
-    };
+            'identifier': state.identifier,
+            'full_name': state.full_name,
+            'password': state.password
+        };
 
-    console.log(payload);
+        const data = await httpPost(httpRegister, payload, false);
 
-    await axios.post('http://127.0.0.1:8000/api/auth/register/', payload)
-        .then(function (response) {
+        if(data.status === 200 || data.status === 201){
             loadingButton.value = false;
             toast.success('Register Success.');
             console.log(response);
-        })
-        .catch(function (error) {
+        } else {
             loadingButton.value = false;
             toast.error('Error registering. Please contact administrator.');
             console.log(error);
-        });
+        }
     } else {
         loadingButton.value = false;
         toast.error('Passwords do not match.');
