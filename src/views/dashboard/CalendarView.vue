@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import AddEventCalendarDialog from '@/components/dashboard/dialogs/calendar/AddEventCalendarDialog.vue';
 import { httpPost, httpPostFindAppointment } from '@/utils/http_config.js';
 import { mapToAppointmentModel as appointmentMapToTableView } from '@/models/appointments/appointment_model';
+import DropdownMenu from '@/components/dropdown/DropdownMenu.vue';
+import { Button } from '@/components/ui/button'
+import { DropdownOption } from '@/components/dropdown/dropdownoptions';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 // Calendar State
 const currentMonth = ref(new Date().getMonth());
@@ -25,28 +31,37 @@ const events = ref<CalendarEvent[]>([
 ]);
 
 // Calendar navigation
-const goToPreviousMonth = () => {
+const goToPreviousMonth = async () => {
   if (currentMonth.value === 0) {
     currentMonth.value = 11;
     currentYear.value--;
   } else {
     currentMonth.value--;
   }
+  // Clear existing events and fetch for the new month
+  events.value = [];
+  await getAppointmentsForMonth(new Date(currentYear.value, currentMonth.value));
 };
 
-const goToNextMonth = () => {
+const goToNextMonth = async () => {
   if (currentMonth.value === 11) {
     currentMonth.value = 0;
     currentYear.value++;
   } else {
     currentMonth.value++;
   }
+  // Clear existing events and fetch for the new month
+  events.value = [];
+  await getAppointmentsForMonth(new Date(currentYear.value, currentMonth.value));
 };
 
-const goToToday = () => {
+const goToToday = async () => {
   const today = new Date();
   currentMonth.value = today.getMonth();
   currentYear.value = today.getFullYear();
+  // Clear existing events and fetch for today's month
+  events.value = [];
+  await getAppointmentsForMonth(today);
 };
 
 // Format a date for display
@@ -151,7 +166,7 @@ const hasMoreThanFiveEvents = (events) => {
   return events && events.length > 5;
 };
 
-const getAppointmentsForMonth = async (date?: Date) => {
+const getAppointmentsForMonth = async (date?: Date, status?: String) => {
   const today = new Date();
   const month = date ? date.getMonth() : today.getMonth();
 
@@ -163,19 +178,51 @@ const getAppointmentsForMonth = async (date?: Date) => {
   const parsedData = appointmentMapToTableView(data.data);
 
   for(var appointment of parsedData){
-    const eventMap = {
-      id: `appointment-${appointment.id}`,
-      title: appointment.full_name,
-      details: appointment.reason,
-      date: new Date(appointment.date),
-      status: appointment.status,
-      queue: appointment.queue_number,
-      reference_code: appointment.reference_code,
-      time_estimate: appointment.time_estimate
+    if(!status || appointment.status === status){
+      const eventMap = {
+        id: `appointment-${appointment.id}`,
+        title: appointment.full_name,
+        details: appointment.reason,
+        date: new Date(appointment.date),
+        status: appointment.status,
+        queue: appointment.queue_number,
+        reference_code: appointment.reference_code,
+        time_estimate: appointment.time_estimate
+      }
+
+      events.value.push(eventMap);
+    }
+  }
+}
+
+// status filter
+const statusFilter = ref('');
+watch(statusFilter, async (val) => {
+    if (!val) {
+        return;
     }
 
-    events.value.push(eventMap);
-  }
+    events.value = [];
+    await getAppointmentsForMonth(new Date(currentYear.value, currentMonth.value), val);
+
+    // const payload = {
+    //     "status": val
+    // }
+
+    // const response = await httpPost(httpPostFindAppointment, payload);
+    // if(response.status === 200){
+    //   events.value = [];
+    //   await getAppointmentsForMonth(new Date(currentYear.value, currentMonth.value), val);
+    // } else {
+    //     toast.error(response['message'] ?? "No appointments found.");
+    // }
+})
+
+const clearStatusFilter = async () => {
+  statusFilter.value = '';
+
+  events.value = [];
+  await getAppointmentsForMonth(new Date(currentYear.value, currentMonth.value));
 }
 
 // Set initial sample event to today
@@ -188,7 +235,18 @@ onMounted(() => {
 <template>
   <Navigation>
     <div class="p-6 bg-gray-100 min-h-screen">
-      <h1 class="text-2xl font-bold mb-6 text-gray-800">Calendar</h1>
+      <div class="flex"> 
+        <h1 class="text-2xl font-bold mb-6 text-gray-800 flex-1">Calendar</h1>
+        <div class="flex-none"> 
+          <DropdownMenu v-model="statusFilter" class="mr-3" title="Choose Status" :option="DropdownOption.STATUS"/>
+          <Button v-if="statusFilter.length != 0" @click="clearStatusFilter" class="ml-2 text-red-500 border-red-500" variant="outline">
+              Clear Status
+          </Button>
+        </div>
+       
+
+      </div>
+      
 
       <!-- Calendar container -->
       <div class="rounded-lg shadow bg-white p-4">
