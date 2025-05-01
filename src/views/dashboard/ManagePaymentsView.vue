@@ -50,6 +50,19 @@ const filterByStatusPaymentAppointment = async (value) => {
     }
 }
 
+const filterByDateAppointments = async (value) => {
+    const payload = {
+        "updated_at": value
+    }
+
+    const data = await httpPost(httpPostFindPayment, payload);
+    if(data.status === 200){
+        return data.data;
+    } else {
+        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
+    }
+}
+
 </script>
 
 <template>
@@ -69,6 +82,7 @@ const filterByStatusPaymentAppointment = async (value) => {
             :hasPaymentStatusFilter="true"
             :dropdownOption="DropdownOption.PAYMENT_STATUS"
             :filterByStatusFunction="filterByStatusPaymentAppointment"
+            :filterByDateFunction="filterByDateAppointments"
             >
                 <template #customHeader>
                     <th scope="col" class="px-6 py-3">
