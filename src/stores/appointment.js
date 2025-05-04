@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { httpGet, httpGetAppointments, httpPost, httpDelete, httpPostFindAppointment, httpDeleteAppointment } from '@/utils/http_config.js';
-import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
+import { httpGet, httpGetAppointments, httpPost, httpDelete, httpPostFindAppointment, httpDeleteAppointment, httpFindAppointmentByReference } from '@/utils/http_config.js';
+import { mapToTableView as appointmentMapToTableView, mapToOneAppointmentModel } from '@/models/appointments/appointment_model';
 import { useToast } from 'vue-toastification';
 
 export const useAppointmentStore = defineStore('appointment', {
@@ -68,10 +68,10 @@ export const useAppointmentStore = defineStore('appointment', {
             }
         },
 
-        async filterAnyAppointments(payload){
-            const data = await httpPost(httpPostFindAppointment, payload);
+        async findAppointmentByReference(payload){
+            const data = await httpPost(httpFindAppointmentByReference, payload);
             if(data.status === 200){
-                return appointmentMapToTableView(data.data);
+                return mapToOneAppointmentModel(data.data);
             } else {
                 useToast().error(data['data']['message'] ?? "Error. Please contact admin.");
             }

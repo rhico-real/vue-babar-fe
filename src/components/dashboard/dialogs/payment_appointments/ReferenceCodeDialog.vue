@@ -10,32 +10,55 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useAppointmentStore } from '@/stores/appointment';
+import { useRouter } from 'vue-router';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import type { AppointmentModel } from '@/models/appointments/appointment_model';
 
 const appointmentStore = useAppointmentStore();
+const router = useRouter();
 
 const props = defineProps({
   referenceCode: {
     type: String,
     required: true
-  },
-  paymentData: {
-    type: Object,
-    required: true
   }
 })
 
-const appointment = ref('');
+const appointment = ref<Partial<AppointmentModel>>({});
+const loading = ref(false);
 
 const getAppointment = async () => {
-  const payload = {
-    reference_code: props.referenceCode
+  loading.value = true;
+  try {
+    const payload = {
+      reference_code: props.referenceCode
+    }
+    const result = await appointmentStore.findAppointmentByReference(payload);
+    appointment.value = result;
+  } catch (error) {
+    console.error('Error fetching appointment:', error);
+  } finally {
+    loading.value = false;
   }
-
-  appointment.value = await appointmentStore.filterAnyAppointments(payload);
-  console.log(appointment.value);
 }
 
 const open = ref(false)
+
+// Format key names to readable labels
+const formatLabel = (key) => {
+  return key
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// Check if a field is a date field
+const isDateField = (key) => {
+  return ['created_at', 'updated_at', 'date', 'appointment_date'].includes(key.toLowerCase());
+}
+
 </script>
 
 <template>
@@ -45,49 +68,36 @@ const open = ref(false)
         {{ referenceCode }}
       </button>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[700px]">
+    <DialogContent class="sm:max-w-[500px]">
       <DialogHeader>
-        <DialogTitle>Reference Code Details</DialogTitle>
+        <DialogTitle>Appointment Details</DialogTitle>
         <DialogDescription>
-          Payment information for reference code: {{ referenceCode }}
+          Information for reference code: {{ referenceCode }}
         </DialogDescription>
       </DialogHeader>
       
-      <div class="grid gap-4 py-4">
-        <div class="grid grid-cols-4 items-left gap-4">
-          <label class="text-left font-medium col-span-2">Reference Code:</label>
-          <span class="col-span-2">{{ paymentData.reference_code }}</span>
-        </div>
-        
-        <div class="grid grid-cols-4 items-center gap-4">
-          <label class="text-right font-medium">Status:</label>
-          <span class="col-span-3">
-            <span 
-              :class="{
-                'text-green-600': paymentData.status === 'approved',
-                'text-yellow-600': paymentData.status === 'pending',
-                'text-red-600': paymentData.status === 'rejected'
-              }"
-              class="font-medium"
-            >
-              {{ paymentData.status }}
-            </span>
-          </span>
-        </div>
-        
-        <div class="grid grid-cols-4 items-center gap-4">
-          <label class="text-right font-medium">Created:</label>
-          <span class="col-span-3">{{ new Date(paymentData.created_at).toLocaleString() }}</span>
-        </div>
-        
-        <div class="grid grid-cols-4 items-center gap-4">
-          <label class="text-right font-medium">Updated:</label>
-          <span class="col-span-3">{{ new Date(paymentData.updated_at).toLocaleString() }}</span>
+      <!-- Loading state -->
+      <div v-if="loading" class="text-center py-8">
+        Loading appointment details...
+      </div>
+      
+      <!-- Content when appointment data is loaded -->
+      <div v-else-if="appointment" class="grid gap-4 py-4">
+        <div v-for="(value, key) in appointment" :key="key" class="grid grid-cols-4 items-center justify-center gap-4">
+          <Label :for="key" class="text-left">
+              {{ key }}
+          </Label>
+          <Input v-model="appointment[key]" :id="key" :class="`${key != 'id' ? 'disabled:opacity-100 disabled:cursor-not-allowed': ''} col-span-3`" disabled/>
         </div>
       </div>
       
-      <div class="flex justify-end">
-        <Button @click="open = false">Close</Button>
+      <!-- No data state -->
+      <div v-else class="text-center py-8">
+        No appointment data available.
+      </div>
+      
+      <div class="flex justify-end gap-2">
+        <Button variant="outline" @click="open = false">Close</Button>
       </div>
     </DialogContent>
   </Dialog>
