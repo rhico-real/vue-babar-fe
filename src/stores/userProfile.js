@@ -30,7 +30,7 @@ export const useUserProfileStore = defineStore('userProfile', {
       
       try {
         const response = await httpGet(httpGetProfile);
-        this.profile = response;
+        this.profile = response.data;
         return this.profile;
       } catch (err) {
         console.error('Failed to fetch user profile:', err);

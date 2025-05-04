@@ -1,27 +1,29 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
 import PaymentAppointmentDialog from '@/components/dashboard/dialogs/payment_appointments/PaymentAppointmentDialog.vue'
-import CustomButton from '@/components/common/Button.vue';
-import { httpGet, httpPost, httpDelete, httpGetAllPaymentAppointments, httpPostFindPayment } from '@/utils/http_config.js';
+import { httpGet, httpPost, httpGetAllPaymentAppointments, httpPostFindPayment } from '@/utils/http_config.js';
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';
 import { mapToTableView as paymentMapToTableView } from '@/models/payments/payment_model';
 import TableView from '@/components/dashboard/TableView.vue';
-import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
 import { DropdownOption } from '@/components/dropdown/dropdownoptions';
+import { usePaymentAppointmentStore } from '@/stores/payment_appointment';
 
 const toast = useToast();
+const paymentAppointmentStore = usePaymentAppointmentStore();
 
 const paymentsList = ref([]);
 
 onMounted( async () => {
-    await getPayments();
+    // await getPayments();
+    await paymentAppointmentStore.fetchPayment();
+    paymentsList.value = paymentAppointmentStore.payment_list;
 });
 
 
 const getPayments = async () => {
     const data = await httpGet(httpGetAllPaymentAppointments);
-    paymentsList.value = paymentMapToTableView(data);
+    paymentsList.value = paymentMapToTableView(data.data);
 }
 
 const searchPayment = async (value) => {

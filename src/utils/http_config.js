@@ -13,13 +13,13 @@ export const headers = () => ({
 });
 
 
-export const BASEURL = "https://radsoftph.com";
-// export const BASEURL = "http://127.0.0.1:8000";
+// export const BASEURL = "https://radsoftph.com";
+export const BASEURL = "http://127.0.0.1:8000";
 
 export const httpGet = async (endpoint) => {
     try{
         const response = await axios.get(endpoint, headers());
-        return response.data;
+        return response;
     }catch(error){
         if(error.status == 401){
             logout();

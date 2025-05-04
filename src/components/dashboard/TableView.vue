@@ -186,9 +186,14 @@ watch(searchbar, (text) => {
 });
 
 // Extract headers dynamically from the first object
-const tableHeaders = computed(() =>
-    filteredItems.value.length > 0 ? Object.keys(filteredItems.value[0]) : []
-);  
+const tableHeaders = computed(() => {
+    try {
+        return filteredItems.value.length > 0 ? Object.keys(filteredItems.value[0]) : [];
+    } catch (e) {
+        // console.error("Error getting table headers:", e);
+        return [];
+    }
+}); 
 
 // Function to format headers (e.g., convert "patient_name" to "Patient Name")
 const formatHeader = (key) => {

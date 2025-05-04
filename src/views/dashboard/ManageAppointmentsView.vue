@@ -4,78 +4,24 @@ import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
 import CustomButton from '@/components/common/Button.vue';
 import TableView from '@/components/dashboard/TableView.vue';
 
-import { httpGet, httpPost, httpDelete, httpGetAppointments, httpPostFindAppointment, httpDeleteAppointment } from '@/utils/http_config.js';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import AppointmentDialog from '@/components/dashboard/dialogs/appointments/AppointmentDialog.vue';
-import { useToast } from 'vue-toastification';
 
-const toast = useToast();
+import { useAppointmentStore } from '@/stores/appointment';
+
+const appointmentStore = useAppointmentStore();
 
 const appointmentsList = ref([]);
 
 onMounted( async () => {
-    await getAppointments();
+    await appointmentStore.fetchAppointments();
 });
 
+watchEffect(() => {
+    appointmentsList.value = appointmentStore.appointment_list;
+});
 
-const getAppointments = async () => {
-    const data = await httpGet(httpGetAppointments);
-    appointmentsList.value = appointmentMapToTableView(data);
-}
-
-const searchAppointments = async (value) => {
-    const payload = {
-        "full_name": value
-    }
-
-    const data = await httpPost(httpPostFindAppointment, payload);
-    if(data.status === 200){
-        return data.data;
-    } else {
-        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
-    }
-}
-
-const filterByDateAppointments = async (value) => {
-    const payload = {
-        "date": value
-    }
-
-    const data = await httpPost(httpPostFindAppointment, payload);
-    if(data.status === 200){
-        return data.data;
-    } else {
-        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
-    }
-}
-
-const filterByStatusAppointments = async (value) => {
-    const payload = {
-        "status": value
-    }
-
-    const data = await httpPost(httpPostFindAppointment, payload);
-    if(data.status === 200){
-        return data.data;
-    } else {
-        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
-    }
-}
-
-const deleteAppointment = async (value) => {
-    const payload = {
-        "id": value
-    }
-
-    const data = await httpDelete(httpDeleteAppointment, payload);
-    if(data.status === 200){
-        toast.success(data.data['message'] ?? "Appointment successfully deleted.");
-        await getAppointments();
-    } else {
-        toast.error(data['response']['data']['message'] ??  "Error deleting Appointment.");
-    }
-}
 
 </script>
 
@@ -87,7 +33,7 @@ const deleteAppointment = async (value) => {
             
             <!-- add patient -->
             <div class="flex justify-end">
-                <AppointmentDialog @submitted="getAppointments">
+                <AppointmentDialog @submitted="appointmentStore.fetchAppointments">
                     <template #triggerbutton>
                         <CustomButton isAdd="true" text="Add Appointment" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300"></CustomButton>
                     </template>
@@ -100,12 +46,12 @@ const deleteAppointment = async (value) => {
             class="mt-20 h-full" 
             title="Appointments" 
             :items="appointmentsList" 
-            :searchbarFunction="searchAppointments" 
+            :searchbarFunction="appointmentStore.searchAppointments" 
             :parser="appointmentMapToTableView" 
-            :filterByDateFunction="filterByDateAppointments" 
+            :filterByDateFunction="appointmentStore.filterByDateAppointments" 
             :hasDateFilter="true" 
             :hasStatusFilter="true" 
-            :filterByStatusFunction="filterByStatusAppointments">
+            :filterByStatusFunction="appointmentStore.filterByStatusAppointments">
                 <template #customHeader>
                     <th scope="col" class="px-6 py-3">
                         Actions
@@ -117,14 +63,14 @@ const deleteAppointment = async (value) => {
                             title="Edit Appointment"
                             :appointment="item"
                             :isEdit="true",
-                            @submitted="getAppointments"
+                            @submitted="appointmentStore.fetchAppointments"
                         >
                             <template #triggerbutton>
                                 <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                             </template>
                         </AppointmentDialog>
                         
-                        <DeleteDialog :deleteHandler="() => deleteAppointment(item.id)">
+                        <DeleteDialog :deleteHandler="() => appointmentStore.deleteAppointment(item.id)">
                             <template #message>
                                 <strong class="text-red-500">Appointment details:</strong>
                                 <ul>

@@ -3,13 +3,14 @@ import Navigation from '@/components/dashboard/Navigation.vue';
 import totalpatientsicon from '@/assets/img/totalpatients.png';
 import totalappointmentsicon from '@/assets/img/totalappointments.png';
 import TableView from '@/components/dashboard/TableView.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { BASEURL, httpGet, httpPost, httpGetAllPaymentAppointments } from '@/utils/http_config.js';
 import { mapToTableView as appointmentMapToTableView } from '@/models/appointments/appointment_model';
 import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
 import { mapToTableView as paymentMapToTableView } from '@/models/payments/payment_model';
 import { useToast } from 'vue-toastification';
 import { useUserProfileStore } from '@/stores/userProfile';
+import { useDashboardStore } from '@/stores/dashboard';
 
 const httpGetAppointments = `${BASEURL}/api/get_appointments/`;
 const httpGetPatients = `${BASEURL}/api/patients/`;
@@ -24,28 +25,33 @@ const patientsList = ref([]);
 const totalPayments = ref(0);
 
 const userProfileStore = useUserProfileStore();
+const dashboardStore = useDashboardStore();
 
 onMounted( async () => {
-    await getAppointments();
-    await getPatients();
-    await getPayments();
+    // await getAppointments();
+    // await getPatients();
+    // await getPayments();
     await userProfileStore.fetchProfile();
 });
 
+watchEffect(() => {
+    appointmentsList.value = dashboardStore.appointment_list;
+    patientsList.value = dashboardStore.patients_list;
+});
 
 const getAppointments = async () => {
     const data = await httpGet(httpGetAppointments);
-    appointmentsList.value = appointmentMapToTableView(data);
+    appointmentsList.value = appointmentMapToTableView(data.data);
 }
 
 const getPatients = async () => {
     const data = await httpGet(httpGetPatients);
-    patientsList.value = patientMapToTableView(data);
+    patientsList.value = patientMapToTableView(data.data);
 }
 
 const getPayments= async () => {
     const data = await httpGet(httpGetAllPaymentAppointments);
-    totalPayments.value = paymentMapToTableView(data).length;
+    totalPayments.value = paymentMapToTableView(data.data).length;
 }
 
 const searchAppointments = async (value) => {
@@ -113,7 +119,7 @@ const filterByStatusAppointments = async (value) => {
                     <div class="flex">
                         <div class="flex flex-col mr-12">
                             <p>Total Appointments</p>
-                            <h1 class="font-bold text-2xl">{{ appointmentsList.length }}</h1>
+                            <h1 class="font-bold text-2xl">{{ dashboardStore.total_appointments }}</h1>
                         </div>
                         <img :src="totalappointmentsicon" alt="" class="h-14">
                     </div>
@@ -129,7 +135,7 @@ const filterByStatusAppointments = async (value) => {
                     <div class="flex">
                         <div class="flex flex-col mr-12">
                             <p>Total Patients</p>
-                            <h1 class="font-bold text-2xl">{{ patientsList.length }}</h1>
+                            <h1 class="font-bold text-2xl">{{ dashboardStore.total_patients }}</h1>
                         </div>
                         <img :src="totalpatientsicon" alt="" class="h-14">
                     </div>
@@ -145,7 +151,7 @@ const filterByStatusAppointments = async (value) => {
                     <div class="flex">
                         <div class="flex flex-col mr-12">
                             <p>Total Payments</p>
-                            <h1 class="font-bold text-2xl">{{ totalPayments }}</h1>
+                            <h1 class="font-bold text-2xl">{{ dashboardStore.total_payments }}</h1>
                         </div>
                         <img :src="totalappointmentsicon" alt="" class="h-14">
                     </div>

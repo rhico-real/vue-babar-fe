@@ -2,53 +2,24 @@
 import Navigation from '@/components/dashboard/Navigation.vue';
 import PatientDialog from '@/components/dashboard/dialogs/patients/PatientDialog.vue';
 import CustomButton from '@/components/common/Button.vue';
-import { httpGet, httpPost, httpDelete, httpPatients, httpPostFindPatient } from '@/utils/http_config.js';
-import { useToast } from 'vue-toastification';
-import { ref, onMounted } from 'vue';
-import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
+
+import { ref, onMounted, watchEffect } from 'vue';
 import TableView from '@/components/dashboard/TableView.vue';
 import DeleteDialog from '@/components/dashboard/dialogs/DeleteDialog.vue';
-
-const toast = useToast();
+import { usePatientStore } from '@/stores/patient';
+import { mapToTableView as patientMapToTableView } from '@/models/patients/patient_model';
 
 const patientsList = ref([]);
+const patientStore = usePatientStore();
 
 onMounted( async () => {
-    await getPatients();
+    await patientStore.fetchPatients();
 });
 
 
-const getPatients = async () => {
-    const data = await httpGet(httpPatients);
-    patientsList.value = patientMapToTableView(data);
-}
-
-const searchPatient = async (value) => {
-    const payload = {
-        "full_name": value
-    }
-
-    const data = await httpPost(httpPostFindPatient, payload);
-    if(data.status === 200){
-        return data.data;
-    } else {
-        toast.error(data['data']['message'] ?? "Error. Please contact admin.");
-    }
-}
-
-const deletePatient = async (value) => {
-    const payload = {
-        "id": value
-    }
-
-    const data = await httpDelete(httpPatients, payload);
-    if(data.status === 200){
-        toast.success(data.data['message'] ?? "Patient successfully deleted.");
-        await getPatients();
-    } else {
-        toast.error(data['data']['message'] ?? "Error deleting Patient.");
-    }
-}
+watchEffect(() => {
+    patientsList.value = patientStore.patients_list;
+});
 
 </script>
 
@@ -60,7 +31,7 @@ const deletePatient = async (value) => {
             
             <!-- add patient -->
             <div class="flex justify-end">
-                <PatientDialog @submitted="getPatients">
+                <PatientDialog @submitted="patientStore.fetchPatients">
                     <template #triggerbutton>
                         <CustomButton isAdd="true" text="Add Patient" color="bg-dashboard-buttons-add" hoverColor="shadow-green-300"></CustomButton>
                     </template>
@@ -72,7 +43,7 @@ const deletePatient = async (value) => {
             class="mt-20 h-full" 
             title="Patients" 
             :items="patientsList" 
-            :searchbarFunction="searchPatient" 
+            :searchbarFunction="patientStore.searchPatient" 
             :parser="patientMapToTableView" 
             :hasDateFilter="false" 
             :hasStatusFilter="false" 
@@ -88,14 +59,14 @@ const deletePatient = async (value) => {
                             title="Edit Patient"
                             :patient="item"
                             :isEdit="true",
-                            @submitted="getPatients"
+                            @submitted="patientStore.fetchPatients"
                         >
                             <template #triggerbutton>
                                 <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                             </template>
                         </PatientDialog>
                         
-                        <DeleteDialog :deleteHandler="() => deletePatient(item.id)">
+                        <DeleteDialog :deleteHandler="() => patientStore.deletePatient(item.id)">
                             <template #message>
                                 <strong class="text-red-500">Appointment details:</strong>
                                 <ul>
