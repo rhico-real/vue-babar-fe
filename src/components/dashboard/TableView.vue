@@ -336,6 +336,7 @@ const clearStatusFilter = () => {
                             <span v-else-if="key.toLowerCase() === 'photo' && item[key]">
                                 <img class="bg-gray-300 h-10 w-10 cursor-pointer" :src="item[key]" alt="" @click="openImageModal(item[key])">
                             </span>
+                            <slot v-else-if="$slots[`column:${key}`]" :name="`column:${key}`" :item="item" :value="item[key]" :key="key"></slot>
                             <span v-else>{{ item[key] ?? "N/A" }}</span>
                         </td>
                         <slot name="customrow" :item="item" :index="itemIndex"></slot>

@@ -67,6 +67,15 @@ export const useAppointmentStore = defineStore('appointment', {
                 useToast().error(data['data']['message'] ?? "Error. Please contact admin.");
             }
         },
+
+        async filterAnyAppointments(payload){
+            const data = await httpPost(httpPostFindAppointment, payload);
+            if(data.status === 200){
+                return appointmentMapToTableView(data.data);
+            } else {
+                useToast().error(data['data']['message'] ?? "Error. Please contact admin.");
+            }
+        },
         
         async deleteAppointment(value) {
             const payload = {

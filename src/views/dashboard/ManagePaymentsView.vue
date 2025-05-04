@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Navigation from '@/components/dashboard/Navigation.vue';
 import PaymentAppointmentDialog from '@/components/dashboard/dialogs/payment_appointments/PaymentAppointmentDialog.vue'
+import ReferenceCodeDialog from '@/components/dashboard/dialogs/payment_appointments/ReferenceCodeDialog.vue'
 import { httpGet, httpPost, httpGetAllPaymentAppointments, httpPostFindPayment } from '@/utils/http_config.js';
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';
@@ -86,6 +87,14 @@ const filterByDateAppointments = async (value) => {
             :filterByStatusFunction="filterByStatusPaymentAppointment"
             :filterByDateFunction="filterByDateAppointments"
             >
+                <!-- Custom reference code column -->
+                <template #column:reference_code="{ item, value }">
+                    <ReferenceCodeDialog 
+                        :referenceCode="value" 
+                        :paymentData="item"
+                    />
+                </template>
+                
                 <!-- Actions: Edit -->
                 <template #customHeader>
                     <th scope="col" class="px-6 py-3">
@@ -113,4 +122,3 @@ const filterByDateAppointments = async (value) => {
     </Navigation>
     
 </template>
-
