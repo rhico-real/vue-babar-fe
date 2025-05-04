@@ -256,6 +256,7 @@ const clearStatusFilter = () => {
 <template>
      <div class="flex flex-col mt-10 bg-white p-6 rounded-lg h-3/5">
         <div class="flex">
+            <!-- Searchbar -->
             <div class="flex flex-1 ">
                 <h1 class="text-3xl font-bold mb-5 mr-5">{{title}}</h1>
                 <div class="relative w-5/12 items-center">
@@ -278,8 +279,10 @@ const clearStatusFilter = () => {
                 Clear Status
             </Button>
 
+            <!-- dropdown month-only option -->
             <DropdownMenu v-if="props.hasMonthFilter" :option="DropdownOption.MONTH"/>
             
+            <!-- popover for calendar -->
             <Popover v-model:open="isPopoverOpen" v-if="props.hasDateFilter">
                 <PopoverTrigger as-child>
                     <Button :class="[filteredDate ? 'text-blue-500' : '']" variant="outline">
@@ -298,6 +301,7 @@ const clearStatusFilter = () => {
         <!-- table -->
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg h-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <!-- headers -->
                 <thead class="bg-gray-200 text-xs text-gray-700 uppercase">
                     <tr>
                         <th scope="col" class="px-6 py-3" 
@@ -321,6 +325,8 @@ const clearStatusFilter = () => {
                         <slot name="customHeader"></slot>
                     </tr>
                 </thead>
+
+                <!-- values -->
                 <tbody>
                     <tr class="bg-white hover:bg-gray-50" v-for="(item, itemIndex) in filteredItems" :key="itemIndex">
                         <td class="px-6 py-4 text-black items-start" v-for="(key, index) in tableHeaders" :key="index">
@@ -351,24 +357,24 @@ const clearStatusFilter = () => {
 </template>
 
 <style scoped>
-/* Add ambient effect to the modal backdrop */
-.image-modal-backdrop {
-  animation: fadeIn 0.1s ease-in-out;
-  backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0.85);
-}
+    /* Add ambient effect to the modal backdrop */
+    .image-modal-backdrop {
+        animation: fadeIn 0.1s ease-in-out;
+        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.85);
+    }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 
-/* Sortable column styles */
-th div {
-  user-select: none;
-}
+    /* Sortable column styles */
+    th div {
+        user-select: none;
+    }
 
-th div.cursor-pointer:hover {
-  cursor: pointer;
-}
+    th div.cursor-pointer:hover {
+        cursor: pointer;
+    }
 </style>

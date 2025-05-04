@@ -86,6 +86,7 @@ const filterByDateAppointments = async (value) => {
             :filterByStatusFunction="filterByStatusPaymentAppointment"
             :filterByDateFunction="filterByDateAppointments"
             >
+                <!-- Actions: Edit -->
                 <template #customHeader>
                     <th scope="col" class="px-6 py-3">
                         Actions
