@@ -78,8 +78,9 @@ const userPhotoUrl = computed(() => userProfileStore.userPhoto || profile);
             </button>
         </div>
         <!-- Logo -->
-        <div class="flex items-center justify-center">
-          <img v-if="!sidebarCollapsed" class="py-4 px-6 size-36 object-contain" :src="settingsStore.photo || logo" alt="BAS logo">
+        <div v-if="!sidebarCollapsed" class="flex flex-col items-center justify-center mb-5">
+          <img class="py-4 px-6 size-36 object-contain" :src="settingsStore.photo || logo" alt="BAS logo">
+          <h1 class="font-bold text-white text-center">{{ settingsStore.name }}</h1>
         </div>
 
         
