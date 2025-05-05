@@ -1,24 +1,41 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import { onMounted } from 'vue';
-import { useUserProfileStore } from '@/stores/userProfile';
+import { onMounted, watch } from 'vue';
+
 import { useToast } from 'vue-toastification';
 import { initialAPICalls } from '@/utils/stores_helper';
+import { useSettingsStore } from '@/stores/settings';
+import { updateSiteConfiguration } from '@/utils/dynamic_site_config';
 
 const toast = useToast();
-const userProfileStore = useUserProfileStore();
+const settingsStore = useSettingsStore();
 
 onMounted(async () => {
   // Try to load user profile when app starts
   try {
-    await userProfileStore.fetchProfile();
     await initialAPICalls();
+    
+    // Update document title and favicon based on settings
+    updateSiteConfiguration({
+      name: settingsStore.name,
+      favicon: settingsStore.favicon
+    });
   } catch (error) {
     toast.error("Profile fetch failed.");
-    console.log('User not authenticated or profile fetch failed');
+    console.error(error);
   }
 });
 
+// Watch for changes to settings and update the title and favicon
+watch(
+  () => [settingsStore.name, settingsStore.favicon], 
+  () => {
+    updateSiteConfiguration({
+      name: settingsStore.name,
+      favicon: settingsStore.favicon
+    });
+  }
+);
 </script>
 
 <template>

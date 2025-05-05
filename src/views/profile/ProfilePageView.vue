@@ -221,7 +221,8 @@ onMounted(async () => {
             @click="toggleEditMode" 
             :text="isEditing ? 'Cancel' : 'Edit'" 
             :color="isEditing ? '' : 'bg-main'"
-            :class="isEditing ? 'border border-main text-main' : ''"
+            :class="isEditing ? 'border border-main' : ''"
+            :textcolor="isEditing ? 'text-main' : 'text-white'"
           />
           
           <!-- Save button - only shown when editing -->

@@ -7,8 +7,10 @@ import { useRoute, RouterLink } from 'vue-router';
 import LogoutDialog from '@/components/dashboard/dialogs/LogoutDialog.vue';
 import Input from '@/components/ui/input/Input.vue';
 import { useUserProfileStore } from '@/stores/userProfile';
+import { useSettingsStore } from '@/stores/settings'
 
 const route = useRoute();
+const settingsStore = useSettingsStore();
 
 const isActiveLink = (routePath) => {
     return route.path === routePath;
@@ -76,7 +78,10 @@ const userPhotoUrl = computed(() => userProfileStore.userPhoto || profile);
             </button>
         </div>
         <!-- Logo -->
-        <img v-if="!sidebarCollapsed" class="py-4 px-6" :src="logo" alt="BAS logo">
+        <div class="flex items-center justify-center">
+          <img v-if="!sidebarCollapsed" class="py-4 px-6 size-36 object-contain" :src="settingsStore.photo || logo" alt="BAS logo">
+        </div>
+
         
         <!-- Search Bar (Only visible when sidebar is expanded) -->
         <div v-if="!sidebarCollapsed" class="px-4 mb-4">

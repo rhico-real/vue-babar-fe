@@ -176,3 +176,6 @@ export const httpUploadPhotoPatient = `${BASEURL}/api/upload_patient_photo/`;
 export const httpGetProfile = `${BASEURL}/api/auth/get_profile/`;
 export const httpUploadProfilePhoto = `${BASEURL}/api/auth/upload_profile_photo/`;
 export const httpEditProfile = `${BASEURL}/api/auth/edit_profile/`;
+
+// Settings
+export const httpAppSettings = `${BASEURL}/api/appsettings/`
